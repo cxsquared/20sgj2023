@@ -1,0 +1,51 @@
+title: CoffeeGirlA
+---
+<<if $girlA >= 2>>
+    Talked to {$girlAName} {$girlA} times.
+    <<set $girlA += 1>>
+<<elseif $girlA >= 1>>
+    Talked to {$girlAName} {$girlA} times.
+    <<set $girlA += 1>>
+<<else>>
+    <<set $girlA += 1>>
+    Never to {$girlAName}.
+<<endif>>
+===
+title: CoffeeGirlBBoyD
+---
+Coffee {$girlBName} and {$boyDName}
+===
+title: CoffeeGirlCBoyC
+---
+<<if $boyC >= 2>>
+// interacted with boy C multiple times 
+<<elseif $boyC >= 1 and $girlC >= 1>>
+// interacted with both 
+
+<<elseif $boyC >= 1>>
+// interacted with just boy  
+<<elseif $girlC >= 1>>
+// interacted with just girl
+<<else>>
+<<endif>>
+===
+title: CoffeeGirlD
+---
+<<if $girlD >= 1>>
+<<else>>
+<<endif>>
+===
+title: CoffeeBoyB
+---
+// Playing guitar
+<<if $boyB >= 2>>
+<<elseif $boyB >= 1>>
+<<else>>
+<<endif>>
+===
+title: CoffeeBoyA
+---
+===
+title: CoffeeGirlE
+---
+===

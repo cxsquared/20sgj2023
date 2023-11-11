@@ -1,0 +1,71 @@
+title: CurrentTimeStart
+---
+<<declare $girlA = 0>>
+<<declare $girlANameKnown = false>>
+<<declare $girlAName = "Girl A">>
+<<declare $girlB = 0>>
+<<declare $girlBNameKnown = false>>
+<<declare $girlBName = "Girl B">>
+<<declare $girlC = 0>>
+<<declare $girlCNameKnown = true>>
+<<declare $girlCName = "Kat">>
+<<declare $girlD = 0>>
+<<declare $girlDNameKnown = false>>
+<<declare $girlDName = "Girl D">>
+<<declare $girlE = 0>>
+<<declare $girlENameKnown = false>>
+<<declare $girlEName = "Girl E">>
+<<declare $boyA = 0>>
+<<declare $boyANameKnown = false>>
+<<declare $boyAName = "Boy A">>
+<<declare $boyB = 0>>
+<<declare $boyBNameKnown = false>>
+<<declare $boyBName = "Boy B">>
+<<declare $boyC = 0>>
+<<declare $boyCNameKnown = false>>
+<<declare $boyCName = "Boy D">>
+<<declare $boyD = 0>>
+<<declare $boyDNameKnown = false>>
+<<declare $boyDName = "Boy D">>
+
+Player: Nah, 2012 was like 4 years ago right?
+Partner: Hahaha...
+Player: Feels like it was both yesterday and forever ago.
+Partner: Well that was when we first met right?
+Partner: You didn't forget did you? 
+Partner: It was at Kat's house right? 
+Player: Huh, I guess it was.
+===
+title: CurrentTimeAfterParty
+---
+Partner: See I told you it was awkward. 
+Player: I wasn't THAT awkward. 
+Partner: I don't know, I remember you being pretty awkward hehe
+Player: Did we even talk to each other that night?
+Partner: Surely we did right?
+Partner: If we didn't I bet we did at some show.
+Player: Some show?
+Partner: Oh come on...
+Partner: We've known each other how long now?
+Partner: It was at that run down music venue
+Partner: Inside that old theater 
+===
+title: CurrentTimeAfterClub
+---
+Player: That was a good show wasn't it
+Partner: I think so...
+Partner: Honestly I went to so many I don't really remember
+Player: I mean surely we met at one of those shows
+Partner: If not it had to have been at the coffee shop
+Partner: You remember the one everyone use to go to
+Player: You mean the one that played acoustic metal covers all the time?
+===
+title: CurrentTimeEnd
+---
+Partner: That coffee was really good
+Player: Feels good to remember all these places
+Player: Even if the details are a little fuzzy...
+Partner: In the end
+Partner: we still got to hang there
+Partner: and some how ended up here
+===
