@@ -1,0 +1,4 @@
+common.hxml
+
+-dce std
+-js bin/js/game.js

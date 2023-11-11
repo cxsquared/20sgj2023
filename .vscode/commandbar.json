@@ -1,0 +1,49 @@
+{
+  "skipTerminateQuickPick": true,
+  "skipSwitchToOutput": false,
+  "skipErrorMessage": true,
+  "commands": [
+    {
+      "text": "🍊 HL",
+      "color": "orange",
+      "commandType": "exec",
+      "command": "haxe compile-hl.hxml",
+      "alignment": "right",
+      "skipTerminateQuickPick": false,
+      "priority": -10
+    },
+    {
+      "text": "Run HL",
+      "color": "orange",
+      "command": "hl bin/hl/game.hl",
+      "alignment": "right",
+      "skipTerminateQuickPick": false,
+      "priority": -11
+    },
+    {
+      "text": "☕ JS",
+      "color": "yellow",
+      "commandType": "exec",
+      "command": "haxe compile-hl.hxml",
+      "alignment": "right",
+      "skipTerminateQuickPick": false,
+      "priority": -20
+    },
+    {
+      "text": "Run JS",
+      "color": "yellow",
+      "command": "start index.html",
+      "alignment": "right",
+      "skipTerminateQuickPick": false,
+      "priority": -21
+    },
+    {
+      "text": "📦 Redist",
+      "color": "lightgreen",
+      "command": "haxelib run redistHelper compile-hs.hxml compile-js.hxml -o redist -p GameBase -zip",
+      "alignment": "right",
+      "skipTerminateQuickPick": false,
+      "priority": -50
+    }
+  ]
+}

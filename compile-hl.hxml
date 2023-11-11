@@ -1,0 +1,6 @@
+common.hxml
+
+-D windowSize=1280x720
+-D windowTile=Cody's Cool Game
+-lib hldx 
+-hl bin/hl/game.hl
