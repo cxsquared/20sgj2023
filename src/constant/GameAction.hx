@@ -3,6 +3,7 @@ package constant;
 enum abstract GameAction(Int) to Int {
 	var MoveX;
 	var MoveY;
+	var Select;
 
 	var Jump;
 	var Interact;
