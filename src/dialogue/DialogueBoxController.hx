@@ -1,5 +1,6 @@
 package dialogue;
 
+import shaders.WobbleShader;
 import ui.SelectableOptions;
 import constant.GameAction;
 import dn.heaps.input.ControllerAccess;
@@ -63,6 +64,14 @@ class DialogueBoxController {
 		dialogueBackground.height = scene.height / 2 - 8;
 		dialogueBackground.setPosition(4, 4);
 		var dialogueBackgroundSize = dialogueBackground.getSize();
+
+		var shader = new WobbleShader();
+		shader.speed = 10;
+		shader.strength = .005;
+		shader.frames = 5;
+		shader.texture = dialogueBackground.tile.getTexture();
+		shader.flowMap = hxd.Res.noise.toTexture();
+		dialogueBackground.addShader(shader);
 
 		dialogueName = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
 		dialogueName.visible = false;

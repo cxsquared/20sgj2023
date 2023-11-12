@@ -1,5 +1,7 @@
 package scene;
 
+import hxsl.Shader;
+import shaders.WobbleShader;
 import system.HoverHighlightSystem;
 import component.HoverHighlight;
 import dialogue.event.DialogueHidden;
@@ -64,14 +66,26 @@ class PlayScene extends GameScene {
 		loadDialogue();
 	}
 
+	function wobbleShadder(bmp:Bitmap):Shader {
+		var shader = new WobbleShader();
+		shader.speed = 5;
+		shader.strength = .05;
+		shader.frames = 4;
+		shader.texture = bmp.tile.getTexture();
+		shader.flowMap = hxd.Res.noise.toTexture();
+		return shader;
+	}
+
 	public override function init():Void {
 		var s2d = getScene();
 		this.world = new World();
 
 		var bg = world.addEntity("bg").add(new Renderable(new Bitmap(hxd.Res.party.party_bg.toTile(), this)));
 		var player = createPlayer(s2d.width, s2d.height);
+		var boyABmp = new Bitmap(hxd.Res.party.boyA.toTile(), this);
+		boyABmp.addShader(wobbleShadder(boyABmp));
 		var boyA = world.addEntity("BoyA")
-			.add(new Renderable(new Bitmap(hxd.Res.party.boyA.toTile(), this)))
+			.add(new Renderable(boyABmp))
 			.add(new Transform(1110, 464, 150, 254))
 			.add(new Clickable(function() {
 				var event = new StartDialogueNode("PartyBoyA");
@@ -82,8 +96,10 @@ class PlayScene extends GameScene {
 			.add(boyA.get(Transform))
 			.add(new HoverHighlight());
 
+		var girlABmp = new Bitmap(hxd.Res.party.girlA.toTile(), this);
+		girlABmp.addShader(wobbleShadder(girlABmp));
 		var girlA = world.addEntity("GirlA")
-			.add(new Renderable(new Bitmap(hxd.Res.party.girlA.toTile(), this)))
+			.add(new Renderable(girlABmp))
 			.add(new Transform(62, 523, 162, 193))
 			.add(new Clickable(function() {
 				var event = new StartDialogueNode("PartyGirlA");
@@ -95,8 +111,10 @@ class PlayScene extends GameScene {
 			.add(girlA.get(Transform))
 			.add(new HoverHighlight());
 
+		var girlBBmp = new Bitmap(hxd.Res.party.girlBBoyB.toTile(), this);
+		girlBBmp.addShader(wobbleShadder(girlBBmp));
 		var girlBBoyB = world.addEntity("GirlBBoyB")
-			.add(new Renderable(new Bitmap(hxd.Res.party.girlBBoyB.toTile(), this)))
+			.add(new Renderable(girlBBmp))
 			.add(new Transform(405, 477, 347, 243))
 			.add(new Clickable(function() {
 				var event = new StartDialogueNode("PartyGirlBBoyB");
@@ -108,8 +126,10 @@ class PlayScene extends GameScene {
 			.add(girlBBoyB.get(Transform))
 			.add(new HoverHighlight());
 
+		var boyCbmp = new Bitmap(hxd.Res.party.boyC.toTile(), this);
+		boyCbmp.addShader(wobbleShadder(boyCbmp));
 		var boyC = world.addEntity("BoyC")
-			.add(new Renderable(new Bitmap(hxd.Res.party.boyC.toTile(), this)))
+			.add(new Renderable(boyCbmp))
 			.add(new Transform(805, 453, 131, 266))
 			.add(new Clickable(function() {
 				var event = new StartDialogueNode("PartyBoyC");
