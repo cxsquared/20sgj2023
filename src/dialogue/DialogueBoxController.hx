@@ -1,11 +1,8 @@
-package listeners;
+package dialogue;
 
 import ui.SelectableOptions;
-import h2d.Drawable;
-import h2d.filter.Glow;
 import constant.GameAction;
 import dn.heaps.input.ControllerAccess;
-import dialogue.event.DialogueHidden;
 import h2d.Flow;
 import assets.Assets;
 import hxyarn.dialogue.markup.MarkupParseResult;
@@ -14,6 +11,7 @@ import dialogue.event.OptionSelected;
 import dialogue.event.NextLine;
 import dialogue.event.DialogueComplete;
 import dialogue.event.OptionsShown;
+import dialogue.event.DialogueHidden;
 import dialogue.event.LineShown;
 import h2d.Text;
 import h2d.ScaleGrid;
@@ -26,6 +24,7 @@ class DialogueBoxController {
 	public var isTalking = false;
 
 	var eventBus:EventBus;
+	var dialogue:DialogueManager;
 	var dialogueBackground:ScaleGrid;
 	var dialogueName:ScaleGrid;
 	var dialogueTextName:HtmlText;
@@ -43,12 +42,13 @@ class DialogueBoxController {
 	var spaceTocontinue:Text;
 	var ca:ControllerAccess<GameAction>;
 
-	public function new(eventBus:EventBus, world:World, parent:Object, ca:ControllerAccess<GameAction>) {
+	public function new(eventBus:EventBus, world:World, parent:Object, ca:ControllerAccess<GameAction>, dialouge:DialogueManager) {
 		this.eventBus = eventBus;
 		this.world = world;
 		this.parent = parent;
 		this.scene = parent.getScene();
 		this.ca = ca;
+		this.dialogue = dialouge;
 
 		scene.addEventListener(function(e) {
 			if (e.kind == EPush) {
@@ -61,7 +61,7 @@ class DialogueBoxController {
 		dialogueBackground.color.a = .85;
 		dialogueBackground.width = scene.width - 8;
 		dialogueBackground.height = scene.height / 2 - 8;
-		dialogueBackground.setPosition(4, scene.height / 2 - scene.height / 4 - 4);
+		dialogueBackground.setPosition(4, 4);
 		var dialogueBackgroundSize = dialogueBackground.getSize();
 
 		dialogueName = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
@@ -134,7 +134,10 @@ class DialogueBoxController {
 		textState = DialogueBoxState.TypingText;
 
 		dialogueBackground.visible = true;
-		if (dialogueTextName.text != "") {
+		var nameKnown = dialogue.getVariable('$$${dialogueTextName.text}NameKnown').asBool();
+		if (dialogueTextName.text != "" && nameKnown) {
+			var name = dialogue.getVariable('$$${dialogueTextName.text}Name').asString();
+			dialogueTextName.text = name;
 			dialogueName.visible = true;
 		} else {
 			dialogueName.visible = false;

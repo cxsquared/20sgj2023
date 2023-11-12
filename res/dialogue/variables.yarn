@@ -1,0 +1,32 @@
+title: Variables
+---
+<<declare $PlayerNameKnown = true>>
+<<declare $PlayerName = "You">>
+<<declare $girlA = 0>>
+<<declare $girlANameKnown = false>>
+<<declare $girlAName = "Girl A">>
+<<declare $girlB = 0>>
+<<declare $girlBNameKnown = false>>
+<<declare $girlBName = "Girl B">>
+<<declare $girlC = 0>>
+<<declare $girlCNameKnown = true>>
+<<declare $girlCName = "Kat">>
+<<declare $girlD = 0>>
+<<declare $girlDNameKnown = false>>
+<<declare $girlDName = "Girl D">>
+<<declare $girlE = 0>>
+<<declare $girlENameKnown = false>>
+<<declare $girlEName = "Girl E">>
+<<declare $boyA = 0>>
+<<declare $boyANameKnown = false>>
+<<declare $boyAName = "Boy A">>
+<<declare $boyB = 0>>
+<<declare $boyBNameKnown = false>>
+<<declare $boyBName = "Boy B">>
+<<declare $boyC = 0>>
+<<declare $boyCNameKnown = false>>
+<<declare $boyCName = "Boy D">>
+<<declare $boyD = 0>>
+<<declare $boyDNameKnown = false>>
+<<declare $boyDName = "Boy D">>
+===

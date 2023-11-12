@@ -1,4 +1,4 @@
-package event;
+package dialogue.event;
 
 import ecs.event.IEvent;
 

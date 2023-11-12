@@ -20,21 +20,25 @@ class Assets {
 
 		_initDone = true;
 
-		worldData = new assets.World();
+		/*
+			worldData = new assets.World();
 
-		// LDtk file hot-reloading
-		#if debug
-		var res = try hxd.Res.load(worldData.projectFilePath.substr(4)) catch (_) null; // assume the LDtk file is in "res/" subfolder
-		if (res != null)
-			res.watch(() -> {
-				// Only reload actual updated file from disk after a short delay, to avoid reading a file being written
-				haxe.Timer.delay(function() {
-					worldData.parseJson(res.entry.getText());
-					Assets.eventBus.publishEvent(new WorldReloaded());
-				}, 200);
-			});
-		#end
+			// LDtk file hot-reloading
+			#if debug
+			var res = try hxd.Res.load(worldData.projectFilePath.substr(4)) catch (_) null; // assume the LDtk file is in "res/" subfolder
+			if (res != null)
+				res.watch(() -> {
+					// Only reload actual updated file from disk after a short delay, to avoid reading a file being written
+					haxe.Timer.delay(function() {
+						worldData.parseJson(res.entry.getText());
+						Assets.eventBus.publishEvent(new WorldReloaded());
+					}, 200);
+				});
+			#end
+		 */
 
 		font = DefaultFont.get();
+		font = hxd.Res.font.cozette.toFont();
+		font.resizeTo(32);
 	}
 }

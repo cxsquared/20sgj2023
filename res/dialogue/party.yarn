@@ -2,47 +2,47 @@ title: PartyGirlA
 ---
 <<set $girlA += 1>>
 Player: Watcha playing?
-Girl A: The new Mario game...
+girlA: The new Mario game...
 ...
 Player: Uh, so how is it?
-Girl A: Good... I guess.
+girlA: Good... I guess.
 ===
 title: PartyBoyA
 ---
 <<set $boyA += 1>>
-Boy A: You want one?
+boyA: You want one?
 Player: Ah, no I'm good. 
 Player: Thanks though.
-Boy A: There's water in the fridge.
+boyA: There's water in the fridge.
 Player: Help yourself.
 ===
 title: PartyGirlBBoyB
 ---
 <<set $girlB += 1>>
 <<set $boyB += 1>>
-Boy B: I CAN'T BELEIVE THEY SAID THAT!?!
-Girl B: Right!
-Boy B: I'm not surprised.
-Girl B: I heard they just play games in class.
-Boy B: Hey you had class with them didn't you?
+boyB: I CAN'T BELEIVE THEY SAID THAT!?!
+girlB: Right!
+boyB: I'm not surprised.
+girlB: I heard they just play games in class.
+boyB: Hey you had class with them didn't you?
 Player: Oh.. ya
 Player: they really did just play games ALL class
-Girl B: That's crazy.
+girlB: That's crazy.
 <<set $girlBNameKnown = true>>
-Girl B: I'm {$girlBName} by the way
-Boy B: I think we had class together
+girlB: I'm {$girlBName} by the way
+boyB: I think we had class together
 <<set $boyBNameKnown = true>>
-Boy B: but I'm {$boyBName} 
+boyB: but I'm {$boyBName} 
 ===
 title: PartyBoyC
 ---
 <<set $boyC += 1>>
 Player: ... how's it going?
-Boy C: Just chillin
-Boy C: So how do you know {$girlCName} 
+boyC: Just chillin
+boyC: So how do you know {$girlCName} 
 Player: Oh we've got class together
-Boy C: Nice, we went to high school together 
+boyC: Nice, we went to high school together 
 <<set $boyCNameKnown = true>>
-Boy C: Names {$boyCName}
-Boy C: Good to meet you
+boyC: Names {$boyCName}
+boyC: Good to meet you
 ===

@@ -1,15 +1,16 @@
 package system;
 
-import ecs.utils.CameraUtils;
-import h2d.col.Point;
 import ecs.component.Camera;
 import ecs.Entity;
-import ecs.system.IPerEntitySystem;
+import ecs.component.Renderable;
+import component.HoverHighlight;
 import ecs.component.Transform;
-import component.Highlight;
+import ecs.system.IPerEntitySystem;
 
-class HighlightSystem implements IPerEntitySystem {
-	public var forComponents:Array<Class<Dynamic>> = [Highlight, Transform];
+class HoverHighlightSystem implements IPerEntitySystem {
+	public var forComponents:Array<Class<Dynamic>> = [Transform, HoverHighlight, Renderable];
+
+	public var enabled = true;
 
 	var window:hxd.Window;
 	var cameraTransform:Transform;
@@ -29,21 +30,16 @@ class HighlightSystem implements IPerEntitySystem {
 	}
 
 	public function update(entity:Entity, dt:Float) {
-		var h = entity.get(Highlight);
 		var t = entity.get(Transform);
+		var r = entity.get(Renderable);
 
 		var mx = window.mouseX;
 		var my = window.mouseY;
 
-		var point = new Point(t.x, t.y);
-		var position = CameraUtils.worldToScreen(point, cameraComponent, new Point(cameraTransform.x, cameraTransform.y));
-
-		h.drawable.setPosition(position.x, position.y);
-
-		if (mx > t.x && mx < t.x + t.width && my > t.y && my < t.y + t.height) {
-			h.drawable.visible = true;
+		if (enabled && mx > t.x && mx < t.x + t.width && my > t.y && my < t.y + t.height) {
+			r.drawable.visible = true;
 		} else {
-			h.drawable.visible = false;
+			r.drawable.visible = false;
 		}
 	}
 }
