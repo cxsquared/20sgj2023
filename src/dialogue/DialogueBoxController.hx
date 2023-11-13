@@ -37,7 +37,7 @@ class DialogueBoxController {
 	var world:World;
 	var currentText:UnicodeString = "";
 	var numberOfCharsToShow = 0.0;
-	var charsPerSecond = 25.0;
+	var charsPerSecond = 50.0;
 	var textState:DialogueBoxState;
 	var lineMarkup:MarkupParseResult;
 	var spaceTocontinue:Text;
@@ -66,7 +66,7 @@ class DialogueBoxController {
 		var dialogueBackgroundSize = dialogueBackground.getSize();
 
 		var shader = new WobbleShader();
-		shader.speed = 10;
+		shader.speed = 5;
 		shader.strength = .005;
 		shader.frames = 5;
 		shader.texture = dialogueBackground.tile.getTexture();
@@ -77,7 +77,7 @@ class DialogueBoxController {
 		dialogueName.visible = false;
 		dialogueName.width = dialogueBackgroundSize.width / 4;
 		dialogueName.height = dialogueBackgroundSize.height / 5;
-		dialogueName.setPosition(dialogueBackground.x + 8, dialogueBackground.y - 8);
+		dialogueName.setPosition(dialogueBackground.x + 8, dialogueBackground.y + dialogueBackgroundSize.height - dialogueName.height * .75);
 
 		textFlow = new Flow(dialogueBackground);
 		textFlow.borderWidth = 8;
@@ -90,15 +90,24 @@ class DialogueBoxController {
 
 		dialogueText = new HtmlText(Assets.font);
 		dialogueText.maxWidth = dialogueBackgroundSize.width - 16;
+		var nameTextFlow = new Flow(dialogueName);
+		nameTextFlow.borderWidth = 8;
+		nameTextFlow.borderHeight = 8;
+		nameTextFlow.horizontalAlign = FlowAlign.Middle;
+		nameTextFlow.verticalAlign = FlowAlign.Middle;
+		nameTextFlow.minWidth = Std.int(dialogueName.width);
+		nameTextFlow.minHeight = Std.int(dialogueName.height);
 
-		dialogueTextName = new HtmlText(Assets.font, dialogueName);
+		dialogueTextName = new HtmlText(Assets.font);
 		dialogueTextName.text = "Player";
-		dialogueTextName.textAlign = Align.Center;
+		// dialogueTextName.align = Align.Center;
+		// dialogueTextName.imageVerticalAlign = ImageVerticalAlign.Middle;
 		dialogueTextName.maxWidth = dialogueName.width;
+		nameTextFlow.addChild(dialogueTextName);
 
 		spaceTocontinue = new Text(Assets.font, dialogueBackground);
 		spaceTocontinue.setScale(.75);
-		spaceTocontinue.text = "Press Space to Continue";
+		spaceTocontinue.text = "Click to Continue";
 		spaceTocontinue.setPosition(dialogueBackground.getSize().width
 			- spaceTocontinue.getSize().width
 			- 8,
@@ -144,9 +153,12 @@ class DialogueBoxController {
 
 		dialogueBackground.visible = true;
 		var nameKnown = dialogue.getVariable('$$${dialogueTextName.text}NameKnown').asBool();
-		if (dialogueTextName.text != "" && nameKnown) {
-			var name = dialogue.getVariable('$$${dialogueTextName.text}Name').asString();
-			dialogueTextName.text = name;
+		if (dialogueTextName.text != "") {
+			var name = nameKnown ? dialogue.getVariable('$$${dialogueTextName.text}Name').asString() : "???";
+			var color = dialogue.getVariable('$$${dialogueTextName.text}Color').asString();
+			if (color == "null")
+				color = "#FFFFFF";
+			dialogueTextName.text = '<font color="$color">$name</font>';
 			dialogueName.visible = true;
 		} else {
 			dialogueName.visible = false;
@@ -236,8 +248,9 @@ class DialogueBoxController {
 	function handleContinueText() {
 		if (isTalking && clickedContinue()) {
 			if (textState == TypingText) {
-				dialogueText.text = applyTextAttributes(currentText);
-				textState = DialogueBoxState.WaitingForContinue;
+				return;
+				// dialogueText.text = applyTextAttributes(currentText);
+				// textState = DialogueBoxState.WaitingForContinue;
 			} else if (textState == WaitingForContinue) {
 				eventBus.publishEvent(new NextLine());
 			}

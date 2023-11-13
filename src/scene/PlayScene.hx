@@ -1,5 +1,11 @@
 package scene;
 
+import system.SparkMover;
+import domkit.MarkupParser.CodeExpr;
+import ecs.utils.Path;
+import ecs.utils.WorldUtils;
+import h2d.col.Point;
+import component.Spark;
 import hxsl.Shader;
 import shaders.WobbleShader;
 import system.HoverHighlightSystem;
@@ -14,7 +20,6 @@ import dialogue.DialogueBoxController;
 import ecs.event.EventBus;
 import dialogue.DialogueManager;
 import hxd.Window;
-import ecs.utils.WorldUtils;
 import ecs.system.VelocityController;
 import constant.Const;
 import h2d.col.Bounds;
@@ -144,6 +149,26 @@ class PlayScene extends GameScene {
 		var camera = createCamera(s2d.width, s2d.height, player);
 		setupSystems(world, s2d, camera);
 
+		var sparkTile = hxd.Res.images.spark_128_128.toTile();
+		var sparkTiles = [
+			for (y in 0...Std.int(sparkTile.height / 128))
+				for (x in 0...Std.int(sparkTile.width / 128))
+					sparkTile.sub(x * 128, y * 128, 128, 128)
+		];
+		var path = new Path([
+			new Point(0, 0),
+			new Point(s2d.width, 0),
+			new Point(s2d.width, s2d.height),
+			new Point(0, s2d.height),
+			new Point(0, 0),
+		]);
+
+		var sparkAnim = new h2d.Anim(sparkTiles, this);
+		var spark = world.addEntity("spark")
+			.add(new Renderable(sparkAnim))
+			.add(new Transform(0, 0, 128, 128))
+			.add(new Spark(path));
+
 		#if debug
 		WorldUtils.registerConsoleDebugCommands(console, world);
 		#end
@@ -198,6 +223,7 @@ class PlayScene extends GameScene {
 		world.addSystem(new PlayerInputController(Game.current.ca));
 		world.addSystem(new VelocityController());
 		world.addSystem(highlightSystem);
+		world.addSystem(new SparkMover());
 		world.addSystem(new CameraController(scene, console));
 		world.addSystem(new Renderer(camera));
 	}

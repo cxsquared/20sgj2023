@@ -3,6 +3,11 @@ package ecs.utils;
 import h2d.col.Point;
 
 class MathUtils {
+	// https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
+	public static function map(x:Float, in_min:Float, in_max:Float, out_min:Float, out_max:Float):Float {
+		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+	}
+
 	public static function normalizeToOne(value:Float, min:Float, max:Float):Float {
 		return (value - min) / (max - min);
 	}

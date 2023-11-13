@@ -23,10 +23,11 @@ title: PartyGirlBBoyB
 boyB: I CAN'T BELEIVE THEY SAID THAT!?!
 girlB: Right!
 boyB: I'm not surprised.
-girlB: I heard they just play games in class.
-boyB: Hey you had class with them didn't you?
-Player: Oh.. ya
-Player: they really did just play games ALL class
+girlB: I heard they just play games all class.
+boyB: The absolute adaucity of them!
+boyB: OH Hey! You had class with them right?
+Player: Oh.. me?
+Player: Ya, can confirm they just played games ALL class
 girlB: That's crazy.
 <<set $girlBNameKnown = true>>
 girlB: I'm {$girlBName} by the way
@@ -38,11 +39,11 @@ title: PartyBoyC
 ---
 <<set $boyC += 1>>
 Player: ... how's it going?
-boyC: Just chillin
-boyC: So how do you know {$girlCName} 
-Player: Oh we've got class together
-boyC: Nice, we went to high school together 
+boyC: Just chillin...
+boyC: So how do you know {$girlCName}?
+Player: Oh we've got class together.
+boyC: Nice, we went to high school together...
 <<set $boyCNameKnown = true>>
-boyC: Names {$boyCName}
-boyC: Good to meet you
+boyC: Names {$boyCName} by the way.
+boyC: Good to meet you {$boyCName}.
 ===
