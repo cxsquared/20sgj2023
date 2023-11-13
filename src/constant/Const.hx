@@ -10,6 +10,8 @@ class Const {
 
 	public static var FPS(get, never):Int;
 
+	public static var Levels = ["Party", "Club", "Coffee"];
+
 	static inline function get_FPS()
 		return Std.int(hxd.System.getDefaultFrameRate());
 }

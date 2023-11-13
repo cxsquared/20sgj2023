@@ -1,9 +1,9 @@
 package scene;
 
+import event.LevelComplete;
 import h2d.Layers;
 import dialogue.event.DialogueComplete;
 import system.SparkMover;
-import domkit.MarkupParser.CodeExpr;
 import ecs.utils.Path;
 import ecs.utils.WorldUtils;
 import h2d.col.Point;
@@ -20,7 +20,6 @@ import assets.Assets;
 import h2d.Object;
 import dialogue.DialogueBoxController;
 import ecs.event.EventBus;
-import dialogue.DialogueManager;
 import hxd.Window;
 import ecs.system.VelocityController;
 import constant.Const;
@@ -43,11 +42,11 @@ import component.Player;
 class PlayScene extends GameScene {
 	var world:World;
 	var eventBus:EventBus;
-	var dialogueManager:DialogueManager;
 	var dialogueBox:DialogueBoxController;
 	var clickableSystem:ClickableSystem;
 	var highlightSystem:HoverHighlightSystem;
 	var currentInbetweenNode = 0;
+	var partyEntites:Array<Entity> = [];
 
 	static var inbetweenNodes = [
 		"CurrentTimeStart",
@@ -60,8 +59,7 @@ class PlayScene extends GameScene {
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
 
-		eventBus = new EventBus(console);
-		Assets.init(eventBus);
+		eventBus = Game.current.globalEventBus;
 
 		eventBus.subscribe(StartDialogueNode, function(e) {
 			if (clickableSystem != null)
@@ -78,8 +76,6 @@ class PlayScene extends GameScene {
 			if (highlightSystem != null)
 				highlightSystem.enabled = true;
 		});
-
-		loadDialogue();
 	}
 
 	function wobbleShadder(bmp:Bitmap):Shader {
@@ -97,12 +93,40 @@ class PlayScene extends GameScene {
 		var layers = new Layers(this);
 		this.world = new World();
 
-		// loadParty(s2d, world);
-
 		var player = createPlayer(s2d.width, s2d.height);
 		var camera = createCamera(s2d.width, s2d.height, player);
 		setupSystems(world, s2d, camera);
 
+		#if debug
+		WorldUtils.registerConsoleDebugCommands(console, world);
+		#end
+
+		var sceneLayer = new Object();
+		layers.add(sceneLayer, Const.BackgroundLayerIndex);
+
+		var uiParent = new Object();
+		layers.add(uiParent, Const.UiLayerIndex);
+		dialogueBox = new DialogueBoxController(eventBus, world, uiParent, Game.current.ca, Assets.dialogue);
+
+		eventBus.publishEvent(new StartDialogueNode(inbetweenNodes[0]));
+
+		eventBus.subscribe(DialogueComplete, function(e) {
+			if (e.nodeName == inbetweenNodes[0]) {
+				loadParty(s2d, sceneLayer, world);
+				currentInbetweenNode++;
+			}
+		});
+
+		eventBus.subscribe(LevelComplete, function(e) {
+			// Party done
+			if (e.level == Const.Levels[0]) {
+				removeEntitnes(partyEntites);
+				eventBus.publishEvent(new StartDialogueNode(inbetweenNodes[1]));
+			}
+		});
+	}
+
+	function spawnSpark(s2d:Scene, parent:Object, level:String):Entity {
 		var sparkTile = hxd.Res.images.spark_128_128.toTile();
 		var sparkTiles = [
 			for (y in 0...Std.int(sparkTile.height / 128))
@@ -117,36 +141,21 @@ class PlayScene extends GameScene {
 			new Point(0, 0),
 		]);
 
-		var sparkAnim = new h2d.Anim(sparkTiles, this);
-		var spark = world.addEntity("spark")
+		var sparkAnim = new h2d.Anim(sparkTiles, parent);
+		return world.addEntity("spark")
 			.add(new Renderable(sparkAnim))
 			.add(new Transform(0, 0, 128, 128))
-			.add(new Spark(path));
-
-		#if debug
-		WorldUtils.registerConsoleDebugCommands(console, world);
-		#end
-
-		var sceneLayer = new Object();
-		layers.add(sceneLayer, Const.BackgroundLayerIndex);
-
-		var uiParent = new Object();
-		layers.add(uiParent, Const.UiLayerIndex);
-		dialogueBox = new DialogueBoxController(eventBus, world, uiParent, Game.current.ca, dialogueManager);
-
-		eventBus.publishEvent(new StartDialogueNode(inbetweenNodes[0]));
-
-		eventBus.subscribe(DialogueComplete, function(e) {
-			if (e.nodeName == inbetweenNodes[0]) {
-				loadParty(sceneLayer, world);
-				currentInbetweenNode++;
-			}
-		});
+			.add(new Spark(path, function() {
+				eventBus.publishEvent(new LevelComplete(level));
+			}));
 	}
 
-	function loadParty(s2d:Object, world:World) {
-		var bg = world.addEntity("bg").add(new Renderable(new Bitmap(hxd.Res.party.party_bg.toTile(), this)));
-		var boyABmp = new Bitmap(hxd.Res.party.boyA.toTile(), this);
+	function loadParty(s2d:Scene, parent:Object, world:World) {
+		// BG
+		var bg = world.addEntity("bg").add(new Renderable(new Bitmap(hxd.Res.party.party_bg.toTile(), parent)));
+
+		// boy A
+		var boyABmp = new Bitmap(hxd.Res.party.boyA.toTile(), parent);
 		boyABmp.addShader(wobbleShadder(boyABmp));
 		var boyA = world.addEntity("BoyA")
 			.add(new Renderable(boyABmp))
@@ -156,11 +165,12 @@ class PlayScene extends GameScene {
 				eventBus.publishEvent(event);
 			}));
 		var boyAHighlight = world.addEntity("BoyAHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.party.boyA_highlight.toTile(), this)))
+			.add(new Renderable(new Bitmap(hxd.Res.party.boyA_highlight.toTile(), parent)))
 			.add(boyA.get(Transform))
 			.add(new HoverHighlight());
 
-		var girlABmp = new Bitmap(hxd.Res.party.girlA.toTile(), this);
+		// Girl A
+		var girlABmp = new Bitmap(hxd.Res.party.girlA.toTile(), parent);
 		girlABmp.addShader(wobbleShadder(girlABmp));
 		var girlA = world.addEntity("GirlA")
 			.add(new Renderable(girlABmp))
@@ -171,11 +181,12 @@ class PlayScene extends GameScene {
 			}));
 
 		var girlAHighlight = world.addEntity("GirlAHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.party.girlA_highlight.toTile(), this)))
+			.add(new Renderable(new Bitmap(hxd.Res.party.girlA_highlight.toTile(), parent)))
 			.add(girlA.get(Transform))
 			.add(new HoverHighlight());
 
-		var girlBBmp = new Bitmap(hxd.Res.party.girlBBoyB.toTile(), this);
+		// Girl B/Boy B
+		var girlBBmp = new Bitmap(hxd.Res.party.girlBBoyB.toTile(), parent);
 		girlBBmp.addShader(wobbleShadder(girlBBmp));
 		var girlBBoyB = world.addEntity("GirlBBoyB")
 			.add(new Renderable(girlBBmp))
@@ -186,11 +197,12 @@ class PlayScene extends GameScene {
 			}));
 
 		var girlBBoyBHighlight = world.addEntity("GirlBBoyBHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.party.girlBBoyB_highlight.toTile(), this)))
+			.add(new Renderable(new Bitmap(hxd.Res.party.girlBBoyB_highlight.toTile(), parent)))
 			.add(girlBBoyB.get(Transform))
 			.add(new HoverHighlight());
 
-		var boyCbmp = new Bitmap(hxd.Res.party.boyC.toTile(), this);
+		// Boy C
+		var boyCbmp = new Bitmap(hxd.Res.party.boyC.toTile(), parent);
 		boyCbmp.addShader(wobbleShadder(boyCbmp));
 		var boyC = world.addEntity("BoyC")
 			.add(new Renderable(boyCbmp))
@@ -201,29 +213,27 @@ class PlayScene extends GameScene {
 			}));
 
 		var boyCHighlight = world.addEntity("BoyCHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.party.boyC_highlight.toTile(), this)))
+			.add(new Renderable(new Bitmap(hxd.Res.party.boyC_highlight.toTile(), parent)))
 			.add(boyC.get(Transform))
 			.add(new HoverHighlight());
+
+		var spark = spawnSpark(s2d, parent, Const.Levels[0]);
+
+		partyEntites.push(bg);
+		partyEntites.push(boyA);
+		partyEntites.push(boyAHighlight);
+		partyEntites.push(girlA);
+		partyEntites.push(girlAHighlight);
+		partyEntites.push(girlBBoyB);
+		partyEntites.push(girlBBoyBHighlight);
+		partyEntites.push(boyC);
+		partyEntites.push(boyCHighlight);
 	}
 
-	function loadDialogue() {
-		dialogueManager = new DialogueManager(eventBus, console);
-
-		var yarnText = [
-			hxd.Res.dialogue.variables.entry.getText(),
-			hxd.Res.dialogue.current_time.entry.getText(),
-			hxd.Res.dialogue.party.entry.getText(),
-			hxd.Res.dialogue.club.entry.getText(),
-			hxd.Res.dialogue.coffee.entry.getText(),
-		];
-		var yarnFileNames = [
-			hxd.Res.dialogue.variables.entry.name,
-			hxd.Res.dialogue.current_time.entry.name,
-			hxd.Res.dialogue.party.entry.name,
-			hxd.Res.dialogue.club.entry.name,
-			hxd.Res.dialogue.coffee.entry.name,
-		];
-		dialogueManager.load(yarnText, yarnFileNames);
+	function removeEntitnes(entitnes:Array<Entity>) {
+		for (e in entitnes) {
+			world.removeEntity(e);
+		}
 	}
 
 	function createPlayer(sceneWidth:Int, sceneHeight:Int):Entity {

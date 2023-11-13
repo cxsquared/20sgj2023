@@ -3,8 +3,9 @@ package ecs.utils;
 import h2d.col.Point;
 
 class Path {
+	public var time:Float;
+
 	var nodes:Array<Point>;
-	var time:Float;
 	var perOfDistance:Array<Float>;
 	var totalLength:Float;
 	var distanceBetween:Array<Float>;

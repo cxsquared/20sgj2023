@@ -6,8 +6,11 @@ class EventBus {
 	var listeners = new Map<String, Array<Dynamic>>();
 	var console:Console;
 
+	public static var current:EventBus;
+
 	public function new(console:Console) {
 		this.console = console;
+		current = this;
 	}
 
 	public function subscribe<T:IEvent>(event:Class<T>, callback:(T) -> Void) {

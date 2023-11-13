@@ -14,10 +14,18 @@ class SparkMover implements IPerEntitySystem {
 		var t = entity.get(Transform);
 		var s = entity.get(Spark);
 
+		if (s.isFinished)
+			return;
+
 		s.currentTime += dt;
 		var p = s.path.getPointAtTime(s.currentTime);
 
 		t.x = p.x - t.width / 2;
 		t.y = p.y - t.height / 2;
+
+		if (s.currentTime > s.path.time) {
+			s.isFinished = true;
+			s.onComplete();
+		}
 	}
 }

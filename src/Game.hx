@@ -1,3 +1,4 @@
+import assets.Assets;
 import hxd.res.DefaultFont;
 import hxd.Timer;
 import hxd.System;
@@ -49,6 +50,8 @@ class Game extends hxd.App {
 
 		globalEventBus = new EventBus(console);
 		globalEventBus.subscribe(ChangeSceneEvent, onChangeScene);
+
+		Assets.init(globalEventBus, console);
 
 		setGameScene(new PlayScene(s2d, console));
 	}
