@@ -193,8 +193,8 @@ class DialogueManager {
 
 	public function dialogueCompleteHandler() {
 		runningDialouge = false;
-		lastNodeName = "";
 		eventBus.publishEvent(new DialogueComplete(lastNodeName));
+		lastNodeName = "";
 	}
 
 	public function isActive() {

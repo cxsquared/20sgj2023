@@ -1,5 +1,7 @@
 package scene;
 
+import h2d.Layers;
+import dialogue.event.DialogueComplete;
 import system.SparkMover;
 import domkit.MarkupParser.CodeExpr;
 import ecs.utils.Path;
@@ -45,6 +47,15 @@ class PlayScene extends GameScene {
 	var dialogueBox:DialogueBoxController;
 	var clickableSystem:ClickableSystem;
 	var highlightSystem:HoverHighlightSystem;
+	var currentInbetweenNode = 0;
+
+	static var inbetweenNodes = [
+		"CurrentTimeStart",
+		"CurrentTimeAfterParty",
+		"CurrentTimeAfterClub",
+		"CurrentTimeAfter",
+		"CurrentTimeEnd"
+	];
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -83,10 +94,58 @@ class PlayScene extends GameScene {
 
 	public override function init():Void {
 		var s2d = getScene();
+		var layers = new Layers(this);
 		this.world = new World();
 
-		var bg = world.addEntity("bg").add(new Renderable(new Bitmap(hxd.Res.party.party_bg.toTile(), this)));
+		// loadParty(s2d, world);
+
 		var player = createPlayer(s2d.width, s2d.height);
+		var camera = createCamera(s2d.width, s2d.height, player);
+		setupSystems(world, s2d, camera);
+
+		var sparkTile = hxd.Res.images.spark_128_128.toTile();
+		var sparkTiles = [
+			for (y in 0...Std.int(sparkTile.height / 128))
+				for (x in 0...Std.int(sparkTile.width / 128))
+					sparkTile.sub(x * 128, y * 128, 128, 128)
+		];
+		var path = new Path([
+			new Point(0, 0),
+			new Point(s2d.width, 0),
+			new Point(s2d.width, s2d.height),
+			new Point(0, s2d.height),
+			new Point(0, 0),
+		]);
+
+		var sparkAnim = new h2d.Anim(sparkTiles, this);
+		var spark = world.addEntity("spark")
+			.add(new Renderable(sparkAnim))
+			.add(new Transform(0, 0, 128, 128))
+			.add(new Spark(path));
+
+		#if debug
+		WorldUtils.registerConsoleDebugCommands(console, world);
+		#end
+
+		var sceneLayer = new Object();
+		layers.add(sceneLayer, Const.BackgroundLayerIndex);
+
+		var uiParent = new Object();
+		layers.add(uiParent, Const.UiLayerIndex);
+		dialogueBox = new DialogueBoxController(eventBus, world, uiParent, Game.current.ca, dialogueManager);
+
+		eventBus.publishEvent(new StartDialogueNode(inbetweenNodes[0]));
+
+		eventBus.subscribe(DialogueComplete, function(e) {
+			if (e.nodeName == inbetweenNodes[0]) {
+				loadParty(sceneLayer, world);
+				currentInbetweenNode++;
+			}
+		});
+	}
+
+	function loadParty(s2d:Object, world:World) {
+		var bg = world.addEntity("bg").add(new Renderable(new Bitmap(hxd.Res.party.party_bg.toTile(), this)));
 		var boyABmp = new Bitmap(hxd.Res.party.boyA.toTile(), this);
 		boyABmp.addShader(wobbleShadder(boyABmp));
 		var boyA = world.addEntity("BoyA")
@@ -145,36 +204,6 @@ class PlayScene extends GameScene {
 			.add(new Renderable(new Bitmap(hxd.Res.party.boyC_highlight.toTile(), this)))
 			.add(boyC.get(Transform))
 			.add(new HoverHighlight());
-
-		var camera = createCamera(s2d.width, s2d.height, player);
-		setupSystems(world, s2d, camera);
-
-		var sparkTile = hxd.Res.images.spark_128_128.toTile();
-		var sparkTiles = [
-			for (y in 0...Std.int(sparkTile.height / 128))
-				for (x in 0...Std.int(sparkTile.width / 128))
-					sparkTile.sub(x * 128, y * 128, 128, 128)
-		];
-		var path = new Path([
-			new Point(0, 0),
-			new Point(s2d.width, 0),
-			new Point(s2d.width, s2d.height),
-			new Point(0, s2d.height),
-			new Point(0, 0),
-		]);
-
-		var sparkAnim = new h2d.Anim(sparkTiles, this);
-		var spark = world.addEntity("spark")
-			.add(new Renderable(sparkAnim))
-			.add(new Transform(0, 0, 128, 128))
-			.add(new Spark(path));
-
-		#if debug
-		WorldUtils.registerConsoleDebugCommands(console, world);
-		#end
-
-		var uiParent = new Object(this);
-		dialogueBox = new DialogueBoxController(eventBus, world, uiParent, Game.current.ca, dialogueManager);
 	}
 
 	function loadDialogue() {
