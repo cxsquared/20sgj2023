@@ -1,5 +1,8 @@
 package scene;
 
+import hxd.Rand;
+import event.TalkedToEvent;
+import component.Person;
 import system.TimerMaskSystem;
 import component.TimerMask;
 import h2d.Graphics;
@@ -51,6 +54,13 @@ class PlayScene extends GameScene {
 	var highlightSystem:HoverHighlightSystem;
 	var currentInbetweenNode = 0;
 	var currentEntities:Array<Entity> = [];
+	var partyPeople:Array<Person> = [];
+	var clubPeople:Array<Person> = [];
+	var coffeePeople:Array<Person> = [];
+	var lastVisited:Array<String> = [];
+	var partyBg:Bitmap;
+	var clubBg:Bitmap;
+	var coffeeBg:Bitmap;
 
 	static var inbetweenNodes = [
 		"CurrentTimeStart",
@@ -64,22 +74,6 @@ class PlayScene extends GameScene {
 		super(heapsScene, console);
 
 		eventBus = Game.current.globalEventBus;
-
-		eventBus.subscribe(StartDialogueNode, function(e) {
-			if (clickableSystem != null)
-				clickableSystem.canClick = false;
-
-			if (highlightSystem != null)
-				highlightSystem.enabled = false;
-		});
-
-		eventBus.subscribe(DialogueHidden, function(e) {
-			if (clickableSystem != null)
-				clickableSystem.canClick = true;
-
-			if (highlightSystem != null)
-				highlightSystem.enabled = true;
-		});
 	}
 
 	public override function init():Void {
@@ -98,21 +92,44 @@ class PlayScene extends GameScene {
 		var sceneLayer = new Object();
 		layers.add(sceneLayer, Const.BackgroundLayerIndex);
 
+		loadParty(sceneLayer);
+		loadClub(s2d, sceneLayer);
+
 		var uiParent = new Object();
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent, Game.current.ca, Assets.dialogue);
 
+		eventBus.subscribe(StartDialogueNode, function(e) {
+			if (clickableSystem != null)
+				clickableSystem.canClick = false;
+
+			if (highlightSystem != null)
+				highlightSystem.enabled = false;
+		});
+
+		eventBus.subscribe(TalkedToEvent, function(e) {
+			lastVisited = lastVisited.concat(e.names);
+		});
+
+		eventBus.subscribe(DialogueHidden, function(e) {
+			if (clickableSystem != null)
+				clickableSystem.canClick = true;
+
+			if (highlightSystem != null)
+				highlightSystem.enabled = true;
+		});
+
 		eventBus.subscribe(DialogueComplete, function(e) {
 			if (e.nodeName == inbetweenNodes[0]) {
 				dialogueBox.moveTo(4, 4);
-				loadParty(s2d, sceneLayer, world);
+				spawnParty(s2d, sceneLayer, world);
 				currentInbetweenNode++;
 				return;
 			}
 
 			if (e.nodeName == inbetweenNodes[1]) {
 				dialogueBox.moveTo(4, 4);
-				loadClub(s2d, sceneLayer, world);
+				spawnClub(s2d, sceneLayer, world);
 				currentInbetweenNode++;
 				return;
 			}
@@ -126,17 +143,19 @@ class PlayScene extends GameScene {
 				haxe.Timer.delay(function() {
 					startInbetween();
 				}, 1000);
-				return;
 			}
 
 			if (e.level == Const.Levels[1]) {
 				Assets.dialogue.stop();
 				removeEntitnes();
+				haxe.Timer.delay(function() {
+					startInbetween();
+				}, 1000);
 			}
 		});
 
-		eventBus.publishEvent(new DialogueComplete(inbetweenNodes[1]));
-		// startInbetween();
+		// eventBus.publishEvent(new DialogueComplete(inbetweenNodes[1]));
+		startInbetween();
 	}
 
 	function wobbleShadder(bmp:Bitmap, strength:Float = .05):Shader {
@@ -154,189 +173,158 @@ class PlayScene extends GameScene {
 		eventBus.publishEvent(new StartDialogueNode(inbetweenNodes[currentInbetweenNode]));
 	}
 
-	function loadClub(s2d:Scene, parent:Object, world:World) {
+	function loadParty(parent:Object) {
 		// BG
-		var bgBmp = new Bitmap(hxd.Res.club.club_bg.toTile(), parent);
-		var bg = world.addEntity("bg").add(new Renderable(bgBmp));
-
-		currentEntities.push(bg);
-
-		// girlC girl D
-		var girlCgirlDBmp = new Bitmap(hxd.Res.club.girlCgirlD.toTile(), parent);
-		girlCgirlDBmp.addShader(wobbleShadder(girlCgirlDBmp));
-		var girlCgirlD = world.addEntity("girlCgirlD")
-			.add(new Renderable(girlCgirlDBmp))
-			.add(new Transform(370, s2d.getSize().height - girlCgirlDBmp.getSize().height, girlCgirlDBmp.getSize().width, girlCgirlDBmp.getSize().height))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("ClubGirlCGirlD");
-				eventBus.publishEvent(event);
-			}));
-		var girlCgirlDHighlight = world.addEntity("GirlCGirlDHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.club.girlCgirlD_highlight.toTile(), parent)))
-			.add(girlCgirlD.get(Transform))
-			.add(new HoverHighlight());
-
-		currentEntities.push(girlCgirlD);
-		currentEntities.push(girlCgirlDHighlight);
-
-		// Girl A
-		var girlABmp = new Bitmap(hxd.Res.club.girlA.toTile(), parent);
-		girlABmp.addShader(wobbleShadder(girlABmp));
-		var girlA = world.addEntity("GirlA")
-			.add(new Renderable(girlABmp))
-			.add(new Transform(997, s2d.getSize().height - girlABmp.getSize().height, girlABmp.getSize().width, girlABmp.getSize().height))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("ClubGirlA");
-				eventBus.publishEvent(event);
-			}));
-
-		var girlAHighlight = world.addEntity("GirlAHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.club.girlA_highlight.toTile(), parent)))
-			.add(girlA.get(Transform))
-			.add(new HoverHighlight());
-
-		currentEntities.push(girlA);
-		currentEntities.push(girlAHighlight);
-
-		// Girl B/Boy C
-		var girlBBmp = new Bitmap(hxd.Res.club.girlABoyC.toTile(), parent);
-		girlBBmp.addShader(wobbleShadder(girlBBmp));
-		var girlBBoyB = world.addEntity("GirlBBoyC")
-			.add(new Renderable(girlBBmp))
-			.add(new Transform(600, s2d.getSize().height - girlBBmp.getSize().height, girlBBmp.getSize().width, girlBBmp.getSize().height))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("ClubGirlBBoyC");
-				eventBus.publishEvent(event);
-			}));
-
-		var girlBBoyBHighlight = world.addEntity("GirlBBoyBHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.club.girlABoyC_highlight.toTile(), parent)))
-			.add(girlBBoyB.get(Transform))
-			.add(new HoverHighlight());
-
-		currentEntities.push(girlBBoyB);
-		currentEntities.push(girlBBoyBHighlight);
-
-		// Boy B
-		var boyBbmp = new Bitmap(hxd.Res.club.boyB.toTile(), parent);
-		boyBbmp.addShader(wobbleShadder(boyBbmp));
-		var boyB = world.addEntity("BoyB")
-			.add(new Renderable(boyBbmp))
-			.add(new Transform(227, s2d.getSize().height - boyBbmp.getSize().height, boyBbmp.getSize().width, boyBbmp.getSize().height))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("ClubBoyB");
-				eventBus.publishEvent(event);
-			}));
-
-		var boyBHighlight = world.addEntity("BoyBHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.club.boyB_highlight.toTile(), parent)))
-			.add(boyB.get(Transform))
-			.add(new HoverHighlight());
-
-		currentEntities.push(boyB);
-		currentEntities.push(boyBHighlight);
-
-		// boy A
-		var boyABmp = new Bitmap(hxd.Res.club.boyA.toTile(), parent);
-		boyABmp.addShader(wobbleShadder(boyABmp));
-		var boyA = world.addEntity("BoyA")
-			.add(new Renderable(boyABmp))
-			.add(new Transform(750, s2d.getSize().height - boyABmp.getSize().height, boyABmp.getSize().width, boyABmp.getSize().height))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("ClubBoyA");
-				eventBus.publishEvent(event);
-			}));
-
-		var boyAHighlight = world.addEntity("BoyAHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.club.boyA_highlight.toTile(), parent)))
-			.add(boyA.get(Transform))
-			.add(new HoverHighlight());
-
-		currentEntities.push(boyA);
-		currentEntities.push(boyAHighlight);
-
-		spawnSpark(s2d, parent, Const.Levels[1]);
-	}
-
-	function loadParty(s2d:Scene, parent:Object, world:World) {
-		// BG
-		var bgBmp = new Bitmap(hxd.Res.party.party_bg.toTile(), parent);
-		var bg = world.addEntity("bg").add(new Renderable(bgBmp));
+		partyBg = new Bitmap(hxd.Res.party.party_bg.toTile(), parent);
+		partyBg.visible = false;
 
 		// boy A
 		var boyABmp = new Bitmap(hxd.Res.party.boyA.toTile(), parent);
+		var boyAHighlightBmp = new Bitmap(hxd.Res.party.boyA_highlight.toTile(), parent);
 		boyABmp.addShader(wobbleShadder(boyABmp));
-		var boyA = world.addEntity("BoyA")
-			.add(new Renderable(boyABmp))
-			.add(new Transform(1110, 464, 150, 254))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("PartyBoyA");
-				eventBus.publishEvent(event);
-			}));
-		var boyAHighlight = world.addEntity("BoyAHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.party.boyA_highlight.toTile(), parent)))
-			.add(boyA.get(Transform))
-			.add(new HoverHighlight());
+		var boyA = new Person(["BoyA"], "PartyBoyA", boyABmp, boyAHighlightBmp, 1110, 464);
+
+		partyPeople.push(boyA);
 
 		// Girl A
 		var girlABmp = new Bitmap(hxd.Res.party.girlA.toTile(), parent);
 		girlABmp.addShader(wobbleShadder(girlABmp));
-		var girlA = world.addEntity("GirlA")
-			.add(new Renderable(girlABmp))
-			.add(new Transform(62, 523, 162, 193))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("PartyGirlA");
-				eventBus.publishEvent(event);
-			}));
+		var girlAHighlightBmp = new Bitmap(hxd.Res.party.girlA_highlight.toTile(), parent);
+		var girlA = new Person(["GirlA"], "PartyGirlA", girlABmp, girlAHighlightBmp, 62, 523);
 
-		var girlAHighlight = world.addEntity("GirlAHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.party.girlA_highlight.toTile(), parent)))
-			.add(girlA.get(Transform))
-			.add(new HoverHighlight());
+		partyPeople.push(girlA);
 
 		// Girl B/Boy B
 		var girlBBmp = new Bitmap(hxd.Res.party.girlBBoyB.toTile(), parent);
 		girlBBmp.addShader(wobbleShadder(girlBBmp));
-		var girlBBoyB = world.addEntity("GirlBBoyB")
-			.add(new Renderable(girlBBmp))
-			.add(new Transform(405, 477, 347, 243))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("PartyGirlBBoyB");
-				eventBus.publishEvent(event);
-			}));
+		var girlBHighlightBmp = new Bitmap(hxd.Res.party.girlBBoyB_highlight.toTile(), parent);
 
-		var girlBBoyBHighlight = world.addEntity("GirlBBoyBHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.party.girlBBoyB_highlight.toTile(), parent)))
-			.add(girlBBoyB.get(Transform))
-			.add(new HoverHighlight());
+		var girlBBoyB = new Person(["GirlB", "BoyB"], "PartyGirlBBoyB", girlBBmp, girlBHighlightBmp, 405, 477);
+
+		partyPeople.push(girlBBoyB);
 
 		// Boy C
 		var boyCbmp = new Bitmap(hxd.Res.party.boyC.toTile(), parent);
 		boyCbmp.addShader(wobbleShadder(boyCbmp));
-		var boyC = world.addEntity("BoyC")
-			.add(new Renderable(boyCbmp))
-			.add(new Transform(805, 453, 131, 266))
-			.add(new Clickable(function() {
-				var event = new StartDialogueNode("PartyBoyC");
-				eventBus.publishEvent(event);
-			}));
+		var boyCHighlightBmp = new Bitmap(hxd.Res.party.boyC_highlight.toTile(), parent);
+		var boyC = new Person(["BoyC"], "PartyBoyC", boyCbmp, boyCHighlightBmp, 805, 453);
 
-		var boyCHighlight = world.addEntity("BoyCHighlight")
-			.add(new Renderable(new Bitmap(hxd.Res.party.boyC_highlight.toTile(), parent)))
-			.add(boyC.get(Transform))
-			.add(new HoverHighlight());
+		partyPeople.push(boyC);
+	}
 
-		spawnSpark(s2d, parent, Const.Levels[0]);
+	function spawnParty(s2d:Scene, parent:Object, world:World) {
+		var bg = world.addEntity("bg").add(new Renderable(partyBg));
+		partyBg.visible = true;
 
 		currentEntities.push(bg);
-		currentEntities.push(boyA);
-		currentEntities.push(boyAHighlight);
-		currentEntities.push(girlA);
-		currentEntities.push(girlAHighlight);
-		currentEntities.push(girlBBoyB);
-		currentEntities.push(girlBBoyBHighlight);
-		currentEntities.push(boyC);
-		currentEntities.push(boyCHighlight);
+
+		for (person in partyPeople) {
+			var p = person.spawnPerson(world, eventBus);
+			var highlight = person.spawnHighlight(p, world);
+
+			currentEntities.push(p);
+			currentEntities.push(highlight);
+		}
+
+		spawnSpark(s2d, parent, Const.Levels[0]);
+	}
+
+	function loadClub(s2d:Scene, parent:Object) {
+		clubBg = new Bitmap(hxd.Res.club.club_bg.toTile(), parent);
+		clubBg.visible = false;
+
+		// girlC girl D
+		var girlCgirlDBmp = new Bitmap(hxd.Res.club.girlCgirlD.toTile(), parent);
+		girlCgirlDBmp.addShader(wobbleShadder(girlCgirlDBmp));
+		var girlCGirlDHighlightBmp = new Bitmap(hxd.Res.club.girlCgirlD_highlight.toTile(), parent);
+
+		var girlCGirlD = new Person(["GirlC", "GirlD"], "ClubGirlCGirlD", girlCgirlDBmp, girlCGirlDHighlightBmp, 370,
+			s2d.height - girlCgirlDBmp.getSize().height);
+
+		clubPeople.push(girlCGirlD);
+
+		// Girl A
+		var girlABmp = new Bitmap(hxd.Res.club.girlA.toTile(), parent);
+		girlABmp.addShader(wobbleShadder(girlABmp));
+		var girlAHighlightBmp = new Bitmap(hxd.Res.club.girlA_highlight.toTile(), parent);
+
+		var girlA = new Person(["GirlA"], "ClubGirlA", girlABmp, girlAHighlightBmp, 997, s2d.height - girlABmp.getSize().height);
+
+		clubPeople.push(girlA);
+
+		// Girl B/Boy C
+		var girlBBmp = new Bitmap(hxd.Res.club.girlABoyC.toTile(), parent);
+		girlBBmp.addShader(wobbleShadder(girlBBmp));
+		var girlBHighlightBmp = new Bitmap(hxd.Res.club.girlABoyC_highlight.toTile(), parent);
+
+		var girlBBoyC = new Person(["GirlB", "BoyC"], "ClubGirlBBoyC", girlBBmp, girlBHighlightBmp, 600, s2d.height - girlBBmp.getSize().height);
+
+		clubPeople.push(girlBBoyC);
+
+		// Boy B
+		var boyBbmp = new Bitmap(hxd.Res.club.boyB.toTile(), parent);
+		boyBbmp.addShader(wobbleShadder(boyBbmp));
+		var boyBHighlightBmp = new Bitmap(hxd.Res.club.boyB_highlight.toTile(), parent);
+
+		var boyB = new Person(["BoyB"], "ClubBoyB", boyBbmp, boyBHighlightBmp, 227, s2d.height - boyBbmp.getSize().height);
+
+		clubPeople.push(boyB);
+
+		// boy A
+		var boyABmp = new Bitmap(hxd.Res.club.boyA.toTile(), parent);
+		boyABmp.addShader(wobbleShadder(boyABmp));
+		var boyABmpHighlight = new Bitmap(hxd.Res.club.boyA_highlight.toTile(), parent);
+
+		var boyA = new Person(["BoyA"], "ClubBoyA", boyABmp, boyABmpHighlight, 750, s2d.height - boyABmp.getSize().height);
+
+		clubPeople.push(boyA);
+	}
+
+	function spawnClub(s2d:Scene, parent:Object, world:World) {
+		// BG
+		var bg = world.addEntity("bg").add(new Renderable(clubBg));
+		clubBg.visible = true;
+
+		currentEntities.push(bg);
+
+		var totalNumberToSpawn = 5;
+
+		var peopleToSpawn = new Array<Person>();
+		peopleToSpawn.push(clubPeople.shift());
+
+		totalNumberToSpawn -= 2;
+
+		Rand.create().shuffle(clubPeople);
+
+		var lastMet:Person = null;
+		if (lastVisited.length > 0) {
+			lastMet = clubPeople.filter(function(f) {
+				return f.names.contains(lastVisited[0]);
+			})[0];
+			clubPeople.remove(lastMet);
+			peopleToSpawn.push(lastMet);
+			totalNumberToSpawn -= lastMet.names.length;
+		}
+
+		while (totalNumberToSpawn > 0 && clubPeople.length > 0) {
+			var person = clubPeople.pop();
+			if (totalNumberToSpawn >= person.names.length) {
+				peopleToSpawn.push(person);
+				totalNumberToSpawn -= person.names.length;
+			}
+		}
+
+		for (person in peopleToSpawn) {
+			var p = person.spawnPerson(world, eventBus);
+			var highlight = person.spawnHighlight(p, world);
+
+			currentEntities.push(p);
+			currentEntities.push(highlight);
+		}
+
+		spawnSpark(s2d, parent, Const.Levels[1]);
+
+		lastVisited = [];
 	}
 
 	function spawnSpark(s2d:Scene, parent:Object, level:String) {
