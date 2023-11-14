@@ -1,12 +1,12 @@
 title: CurrentTimeStart
 ---
-Player: Nah, 2012 was like 4 years ago right?
+Player: Nah, 2014 was like 3 years ago right?
 Partner: Hahaha...
 Player: Feels like it was both yesterday and forever ago.
 Partner: Well that was when we first met right?
-Partner: You didn't forget did you? 
-Partner: It was at Kat's house right? 
-Player: Huh, I guess it was.
+Partner: You remember right? 
+Partner: It was at Kat's house I think? 
+Player: Huh, was it...? 
 ===
 title: CurrentTimeAfterParty
 ---
@@ -40,4 +40,8 @@ Player: Even if the details are a little fuzzy...
 Partner: In the end
 Partner: we still got to hang there
 Partner: and some how ended up here
+===
+title: AlreadyTalked
+---
+I think I already remembered that conversation...
 ===

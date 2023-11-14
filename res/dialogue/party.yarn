@@ -1,5 +1,9 @@
 title: PartyGirlA
 ---
+<<if visited("PartyGirlA")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
 <<set $girlA += 1>>
 Player: Watcha playing?
 girlA: The new Mario game...
@@ -9,6 +13,10 @@ girlA: Good... I guess.
 ===
 title: PartyBoyA
 ---
+<<if visited("PartyBoyA")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
 <<set $boyA += 1>>
 boyA: You want one?
 Player: Ah, no I'm good. 
@@ -18,6 +26,10 @@ Player: Help yourself.
 ===
 title: PartyGirlBBoyB
 ---
+<<if visited("PartyGirlBBoyB")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
 <<set $girlB += 1>>
 <<set $boyB += 1>>
 boyB: I CAN'T BELEIVE THEY SAID THAT!?!
@@ -31,12 +43,15 @@ Player: Ya, can confirm they just played games ALL class
 girlB: That's crazy.
 <<set $girlBNameKnown = true>>
 girlB: I'm {$girlBName} by the way
-boyB: I think we had class together
 <<set $boyBNameKnown = true>>
-boyB: but I'm {$boyBName} 
+boyB: Pretty sure we had class together, but I'm {$boyBName}
 ===
 title: PartyBoyC
 ---
+<<if visited("PartyBoyC")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
 <<set $boyC += 1>>
 Player: ... how's it going?
 boyC: Just chillin...

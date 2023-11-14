@@ -21,6 +21,11 @@ import h2d.Scene;
 import h2d.Object;
 import ecs.event.EventBus;
 
+enum abstract DialogueNameLocation(Int) to Int {
+	var TopRight;
+	var BottomRight;
+}
+
 class DialogueBoxController {
 	public var isTalking = false;
 
@@ -42,6 +47,7 @@ class DialogueBoxController {
 	var lineMarkup:MarkupParseResult;
 	var spaceTocontinue:Text;
 	var ca:ControllerAccess<GameAction>;
+	var nameLocation:DialogueNameLocation;
 
 	public function new(eventBus:EventBus, world:World, parent:Object, ca:ControllerAccess<GameAction>, dialouge:DialogueManager) {
 		this.eventBus = eventBus;
@@ -57,80 +63,46 @@ class DialogueBoxController {
 			}
 		});
 
-		dialogueBackground = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
-		dialogueBackground.visible = false;
-		dialogueBackground.color.a = .85;
-		dialogueBackground.width = scene.width - 8;
-		dialogueBackground.height = scene.height / 2 - 8;
-		dialogueBackground.setPosition(4, 4);
-		var dialogueBackgroundSize = dialogueBackground.getSize();
+		buildBackground();
 
-		var shader = new WobbleShader();
-		shader.speed = 5;
-		shader.strength = .005;
-		shader.frames = 5;
-		shader.texture = dialogueBackground.tile.getTexture();
-		shader.flowMap = hxd.Res.noise.toTexture();
-		dialogueBackground.addShader(shader);
+		buildNameBackground();
 
-		dialogueName = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
-		dialogueName.visible = false;
-		dialogueName.width = dialogueBackgroundSize.width / 4;
-		dialogueName.height = dialogueBackgroundSize.height / 5;
-		dialogueName.setPosition(dialogueBackground.x + 8, dialogueBackground.y + dialogueBackgroundSize.height - dialogueName.height * .75);
+		buildText();
 
-		textFlow = new Flow(dialogueBackground);
-		textFlow.borderWidth = 8;
-		textFlow.borderHeight = 8;
-		textFlow.horizontalAlign = FlowAlign.Middle;
-		textFlow.verticalAlign = FlowAlign.Middle;
-		textFlow.minWidth = Std.int(dialogueBackgroundSize.width);
-		textFlow.minHeight = Std.int(dialogueBackgroundSize.height);
-		// textFlow.backgroundTile = h2d.Tile.fromColor(0xffffff, 32, 32);
+		buildNameText();
 
-		dialogueText = new HtmlText(Assets.font);
-		dialogueText.maxWidth = dialogueBackgroundSize.width - 16;
-		var nameTextFlow = new Flow(dialogueName);
-		nameTextFlow.borderWidth = 8;
-		nameTextFlow.borderHeight = 8;
-		nameTextFlow.horizontalAlign = FlowAlign.Middle;
-		nameTextFlow.verticalAlign = FlowAlign.Middle;
-		nameTextFlow.minWidth = Std.int(dialogueName.width);
-		nameTextFlow.minHeight = Std.int(dialogueName.height);
+		buildContinueText();
 
-		dialogueTextName = new HtmlText(Assets.font);
-		dialogueTextName.text = "Player";
-		// dialogueTextName.align = Align.Center;
-		// dialogueTextName.imageVerticalAlign = ImageVerticalAlign.Middle;
-		dialogueTextName.maxWidth = dialogueName.width;
-		nameTextFlow.addChild(dialogueTextName);
-
-		spaceTocontinue = new Text(Assets.font, dialogueBackground);
-		spaceTocontinue.setScale(.75);
-		spaceTocontinue.text = "Click to Continue";
-		spaceTocontinue.setPosition(dialogueBackground.getSize().width
-			- spaceTocontinue.getSize().width
-			- 8,
-			dialogueBackground.getSize().height
-			- spaceTocontinue.getSize().height
-			- 8);
-
-		options = new SelectableOptions(ca, hxd.Res.images.TalkBox_16x16.toTile());
-		options.onSelectCallback = function() {
-			textState = DialogueBoxState.WaitingForNextLine;
-		};
-		options.borderWidth = 8;
-		options.borderHeight = 8;
-		options.layout = FlowLayout.Vertical;
-		options.horizontalAlign = FlowAlign.Middle;
-		options.verticalAlign = FlowAlign.Middle;
-		options.minWidth = Std.int(dialogueBackgroundSize.width);
-		options.minHeight = Std.int(dialogueBackgroundSize.height);
-		options.verticalSpacing = 8;
+		buildOptions();
 
 		eventBus.subscribe(LineShown, this.showLine);
 		eventBus.subscribe(OptionsShown, this.showOptions);
 		eventBus.subscribe(DialogueComplete, this.dialogueFinished);
+
+		moveTo(4, 4);
+		setNameLocation(BottomRight);
+	}
+
+	public function getSize() {
+		return dialogueBackground.getSize();
+	}
+
+	public function moveTo(x:Float, y:Float, nameLocation:DialogueNameLocation = BottomRight) {
+		dialogueBackground.setPosition(x, y);
+		setNameLocation(nameLocation);
+	}
+
+	public function setNameLocation(location:DialogueNameLocation) {
+		this.nameLocation = location;
+
+		var dialogueBackgroundSize = dialogueBackground.getSize();
+
+		switch (nameLocation) {
+			case TopRight:
+				dialogueName.setPosition(dialogueBackground.x + 8, dialogueBackground.y - dialogueName.height * .25);
+			case BottomRight:
+				dialogueName.setPosition(dialogueBackground.x + 8, dialogueBackground.y + dialogueBackgroundSize.height - dialogueName.height * .75);
+		}
 	}
 
 	public function showLine(event:LineShown) {
@@ -224,7 +196,7 @@ class DialogueBoxController {
 		haxe.Timer.delay(function() {
 			isTalking = false;
 			eventBus.publishEvent(new DialogueHidden());
-		}, 50);
+		}, 5);
 	}
 
 	var clicked = false;
@@ -338,6 +310,90 @@ class DialogueBoxController {
 		}
 
 		return sb.toString();
+	}
+
+	function buildBackground() {
+		dialogueBackground = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
+		dialogueBackground.visible = false;
+		dialogueBackground.color.a = .85;
+		dialogueBackground.width = scene.width - 8;
+		dialogueBackground.height = scene.height / 2 - 8;
+
+		var shader = new WobbleShader();
+		shader.speed = 5;
+		shader.strength = .005;
+		shader.frames = 5;
+		shader.texture = dialogueBackground.tile.getTexture();
+		shader.flowMap = hxd.Res.noise.toTexture();
+		dialogueBackground.addShader(shader);
+	}
+
+	function buildNameBackground() {
+		var dialogueBackgroundSize = dialogueBackground.getSize();
+
+		dialogueName = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
+		dialogueName.visible = false;
+		dialogueName.width = dialogueBackgroundSize.width / 4;
+		dialogueName.height = dialogueBackgroundSize.height / 5;
+	}
+
+	function buildText() {
+		var dialogueBackgroundSize = dialogueBackground.getSize();
+
+		textFlow = new Flow(dialogueBackground);
+		textFlow.borderWidth = 8;
+		textFlow.borderHeight = 8;
+		textFlow.horizontalAlign = FlowAlign.Middle;
+		textFlow.verticalAlign = FlowAlign.Middle;
+		textFlow.minWidth = Std.int(dialogueBackgroundSize.width);
+		textFlow.minHeight = Std.int(dialogueBackgroundSize.height);
+		// textFlow.backgroundTile = h2d.Tile.fromColor(0xffffff, 32, 32);
+
+		dialogueText = new HtmlText(Assets.font);
+		dialogueText.maxWidth = dialogueBackgroundSize.width - 16;
+	}
+
+	function buildNameText() {
+		var nameTextFlow = new Flow(dialogueName);
+		nameTextFlow.borderWidth = 8;
+		nameTextFlow.borderHeight = 8;
+		nameTextFlow.horizontalAlign = FlowAlign.Middle;
+		nameTextFlow.verticalAlign = FlowAlign.Middle;
+		nameTextFlow.minWidth = Std.int(dialogueName.width);
+		nameTextFlow.minHeight = Std.int(dialogueName.height);
+
+		dialogueTextName = new HtmlText(Assets.font);
+		dialogueTextName.text = "Player";
+		dialogueTextName.maxWidth = dialogueName.width;
+		nameTextFlow.addChild(dialogueTextName);
+	}
+
+	function buildContinueText() {
+		spaceTocontinue = new Text(Assets.font, dialogueBackground);
+		spaceTocontinue.setScale(.75);
+		spaceTocontinue.text = "Click to Continue";
+		spaceTocontinue.setPosition(dialogueBackground.getSize().width
+			- spaceTocontinue.getSize().width
+			- 8,
+			dialogueBackground.getSize().height
+			- spaceTocontinue.getSize().height
+			- 8);
+	}
+
+	function buildOptions() {
+		var dialogueBackgroundSize = dialogueBackground.getSize();
+		options = new SelectableOptions(ca, hxd.Res.images.TalkBox_16x16.toTile());
+		options.onSelectCallback = function() {
+			textState = DialogueBoxState.WaitingForNextLine;
+		};
+		options.borderWidth = 8;
+		options.borderHeight = 8;
+		options.layout = FlowLayout.Vertical;
+		options.horizontalAlign = FlowAlign.Middle;
+		options.verticalAlign = FlowAlign.Middle;
+		options.minWidth = Std.int(dialogueBackgroundSize.width);
+		options.minHeight = Std.int(dialogueBackgroundSize.height);
+		options.verticalSpacing = 8;
 	}
 }
 

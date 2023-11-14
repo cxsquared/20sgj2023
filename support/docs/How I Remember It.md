@@ -103,7 +103,7 @@ Girl A: Do I know you?
 Player: I don't think we really talked
 Player: I've been to a few of her parties
 ## Girl B/Boy C
->Buying merch
+>Chatting at a standing table
 ---
 >Times interacted with Girl B: 1
 

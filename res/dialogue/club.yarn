@@ -1,81 +1,109 @@
 title: ClubGirlA
 ---
+<<if visited("ClubGirlA")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
+// In line to buy Merch
 <<if $girlA >= 1>>
     <<set $girlA += 1>>
     Player: Ah, your the person from {$girlCName}'s party
-    Girl A: Ya I guess
+    girlA: Ya I guess
     Player: The headliner tonight is sooo good.
-    Girl A: I'm really just here for the opener
-    Girl A: But I guess the main act is pretty good.
+    girlA: I'm really just here for the opener
+    girlA: But I guess the main act is pretty good.
     Player: I don't think I got your name last time.
     <<set $girlANameKnown = true>>
-    Girl A: Oh, it's {$girlAName} 
+    girlA: Oh, it's {$girlAName} 
 <<else>>
     <<set $girlA += 1>>
     Player: *Speaking a litle too loud* hmmm what should I get
-    Girl A: ...
+    girlA: ...
     Player: Oh did I see you at {$girlCName}'s house?
-    Girl A: I don't know, probably
-    Girl A: Do I know you?
+    girlA: I don't know, probably
+    girlA: Do I know you?
     Player: I don't think we really talked
     Player: I've been to a few of her parties
 <<endif>>
 ===
 title: ClubGirlBBoyC
 ---
+<<if visited("ClubGirlBBoyC")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
+// Chatting at a standing table
 <<if $boyC >= 1>>
     <<set $boyC += 1>>
     <<set $girlB += 1>>
-    Boy C: Come on {$girlB}...
-    Boy C: You gotta promise not to tell anyone
-    Girl B: Don't you worry
-    Girl B: Your secrets safe with....
-    Boy C: Oh hey you're friends with {$girlC} right?
+    boyC: Come on {$girlBName}...
+    boyC: You gotta promise not to tell anyone
+    girlB: Don't you worry
+    girlB: Your secrets safe with....
+    boyC: Oh hey you're friends with {$girlCName} right?
     Player: Sup, ya we met at her house right?
-    Girl B: I'm gonna go up to the stage
-    Girl B: Talk to you two after the show
+    girlB: I'm gonna go up to the stage
+    girlB: Talk to you two after the show
 <<elseif $girlB >= 1>>
     <<set $boyC += 1>>
     <<set $girlB += 1>>
-    Girl B: Hey over here!
-    Girl B: Nice to see you again
-    Player: Hey {$girlB} 
+    girlB: Hey over here!
+    girlB: Nice to see you again
+    Player: Hey {$girlBName} 
     Player: You two into this kind of music?
-    Boy C: I mostly just like going out
-    Girl B: I listened to them a bunch in middle school
+    boyC: I mostly just like going out
+    girlB: I listened to them a bunch in middle school
     Player: Oh cool!
     Player: Ya their second album is my favorite
-    Boy C: I don't hate it
+    boyC: I don't hate it
 <<else>>
     <<set $boyC += 1>>
     <<set $girlB += 1>>
     Player: You mind if I sit here
-    Girl B: It's all yours
-    Boy C: Didn't I see you at Kat's house?
+    girlB: It's all yours
+    boyC: Didn't I see you at Kat's house?
     Player: Oh ya I use to go to her parties.
-    Boy C: It's nice to meet you
-    Girl B: I don't think we talked then
+    boyC: It's nice to meet you
+    girlB: I don't think we talked then
     <<set $girlBNameKnown = true>>
-    Girl B: I'm {$girlBName}.
+    girlB: I'm {$girlBName}.
     <<set $boyCNameKnown = true>>
-    Boy C: Oh I'm {$boyCName}.
+    boyC: Oh I'm {$boyCName}.
     Player: Nice to meet you both
 <<endif>>
 ===
 title: ClubGirlCGirlD
 ---
-Girl C: O M G 
-Girl C: They are so good live
-Girl D: Right?!? This  is  a  BOP
-Girl D: I'm gonna go grab a drink.
-Girl D: Want anything?
+<<if visited("ClubGirlCGirlD")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
+// Dancing
+<<set $girlC += 1>>
+<<set $girlD += 1>>
+girlC: O M G 
+girlC: They are so good live
+girlD: Right?!? This  is  a  BOP
+Player: HI {$girlC}!
+girlC: Ahhh Good to see you.
+girlC: I don't think you've met my friend. 
+<<set $girlDNameKnown = true>>
+girlC: This is {$girlDName}
+girlD: Nice to meet you!
+girlD: I'm gonna go grab a drink.
+girlD: Want anything?
 ===
 title: ClubBoyB
 ---
+<<if visited("ClubBoyB")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
+// In the pit
 <<if $boyB >= 1>>
     <<set $boyB += 1>>
     You join the pit
-    Boy A: **Notices you are there and give you a smile**
+    boyB: **Notices you are there and give you a smile**
     Player: **You smile back**
     You both start jumping to the music
 <<else>>
@@ -90,25 +118,30 @@ title: ClubBoyB
 ===
 title: ClubBoyA
 ---
+<<if visited("ClubBoyA")>>
+    <<jump AlreadyTalked>>
+<<endif>>
+
+// buying a drink
 <<if $boyA >= 1>>
     <<set $boyA += 1>>
-    Boy A: Aaayyy I remember you
-    Boy A: Let me buy you a drink
+    boyA: Aaayyy I remember you
+    boyA: Let me buy you a drink
     Player: I wouldn't mind a water
     Player: I don't think I got your name
-    Boy A: Oh my bad
+    boyA: Oh my bad
     <<set $boyANameKnown = true>>
-    Boy A: I'm {$boyAName} 
+    boyA: I'm {$boyAName} 
     Player: Thank for the drink!
 <<else>>
     <<set $boyA += 1>>
-    Boy A: Can I get 1 PBR
-    Boy A: Oh hey you're {$girlCName}'s friend right
+    boyA: Can I get 1 PBR
+    boyA: Oh hey you're {$girlCName}'s friend right
     Player: Ah ya
     Player: We had some classes together
     <<set $boyANameKnown = true>>
-    Boy A: I'm {$boyAName}.
-    Boy A: I think I saw you around her place
+    boyA: I'm {$boyAName}.
+    boyA: I think I saw you around her place
     Player: Oh I remember you now
 <<endif>>
 ===

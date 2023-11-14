@@ -61,9 +61,11 @@ class Game extends hxd.App {
 	}
 
 	public function setGameScene(gs:GameScene) {
-		#if debug
-		console.resetCommands();
-		#end
+		/*
+			#if debug
+			console.resetCommands();
+			#end
+		 */
 
 		if (scene != null) {
 			scene.remove();
@@ -110,7 +112,7 @@ class Game extends hxd.App {
 	function initEngine() {
 		// Mostly taken from https://github.com/deepnight/gameBase
 		// Engine settings
-		engine.backgroundColor = 0xff << 24 | 0x111133;
+		engine.backgroundColor = 0xff << 24 | 0x141414;
 		#if (hl && !debug)
 		engine.fullScreen = true;
 		#end

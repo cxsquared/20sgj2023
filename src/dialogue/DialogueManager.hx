@@ -1,5 +1,6 @@
 package dialogue;
 
+import hxyarn.dialogue.VariableStorage;
 import h2d.Console;
 import hxyarn.dialogue.Command;
 import hxyarn.dialogue.OptionSet;
@@ -51,6 +52,32 @@ class DialogueManager {
 		eventBus.subscribe(OptionSelected, this.optionSelected);
 		eventBus.subscribe(StartDialogueNode, function(event) {
 			this.runNode(event.node);
+		});
+
+		console.add("getVar", function(name:String) {
+			var value = dialogue.variableStorage.getValue(name);
+			console.log('$name: ${value.type.name} ==  ${value.asString()}');
+		});
+
+		console.add("setVarString", function(name:String, value:String) {
+			dialogue.variableStorage.setValue(name, value);
+			console.log('$name set to $value');
+		});
+
+		console.add("setVarBool", function(name:String, value:Bool) {
+			dialogue.variableStorage.setValue(name, value);
+			console.log('$name set to $value');
+		});
+
+		console.add("setVarNumber", function(name:String, value:Float) {
+			dialogue.variableStorage.setValue(name, value);
+			console.log('$name set to $value');
+		});
+
+		console.add("getAllVars", function() {
+			for (name => value in dialogue.variableStorage.getAll()) {
+				console.log('$name: ${value.type.name} ==  ${value.asString()}');
+			}
 		});
 	}
 
