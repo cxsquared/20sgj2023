@@ -33,4 +33,16 @@ class EventBus {
 		for (func in listeners.get(type))
 			func(event);
 	}
+
+	public function unsubscribe<T:IEvent>(event:Class<T>, callback:(T) -> Void) {
+		var type = Type.getClassName(Type.getClass(event));
+		if (!listeners.exists(type)) {
+			#if debug
+			console.log('Unsubscribing event with no listeners: $type');
+			#end
+			return;
+		}
+
+		listeners.get(type).remove(callback);
+	}
 }

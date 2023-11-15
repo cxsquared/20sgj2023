@@ -1,3 +1,4 @@
+import scene.MenuScene;
 import assets.Assets;
 import hxd.res.DefaultFont;
 import hxd.Timer;
@@ -53,7 +54,7 @@ class Game extends hxd.App {
 
 		Assets.init(globalEventBus, console);
 
-		setGameScene(new PlayScene(s2d, console));
+		setGameScene(new MenuScene(s2d, console));
 	}
 
 	public function onChangeScene(event:ChangeSceneEvent) {

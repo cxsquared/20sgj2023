@@ -18,11 +18,9 @@ import component.Spark;
 import hxsl.Shader;
 import shaders.WobbleShader;
 import system.HoverHighlightSystem;
-import component.HoverHighlight;
 import dialogue.event.DialogueHidden;
 import system.ClickableSystem;
 import dialogue.event.StartNode.StartDialogueNode;
-import component.Clickable;
 import assets.Assets;
 import h2d.Object;
 import dialogue.DialogueBoxController;
@@ -66,7 +64,6 @@ class PlayScene extends GameScene {
 		"CurrentTimeStart",
 		"CurrentTimeAfterParty",
 		"CurrentTimeAfterClub",
-		"CurrentTimeAfter",
 		"CurrentTimeEnd"
 	];
 
@@ -94,6 +91,7 @@ class PlayScene extends GameScene {
 
 		loadParty(sceneLayer);
 		loadClub(s2d, sceneLayer);
+		loadCoffee(s2d, sceneLayer);
 
 		var uiParent = new Object();
 		layers.add(uiParent, Const.UiLayerIndex);
@@ -133,6 +131,13 @@ class PlayScene extends GameScene {
 				currentInbetweenNode++;
 				return;
 			}
+
+			if (e.nodeName == inbetweenNodes[2]) {
+				dialogueBox.moveTo(4, 4);
+				spawnCoffee(s2d, sceneLayer, world);
+				currentInbetweenNode++;
+				return;
+			}
 		});
 
 		eventBus.subscribe(LevelComplete, function(e) {
@@ -146,6 +151,14 @@ class PlayScene extends GameScene {
 			}
 
 			if (e.level == Const.Levels[1]) {
+				Assets.dialogue.stop();
+				removeEntitnes();
+				haxe.Timer.delay(function() {
+					startInbetween();
+				}, 1000);
+			}
+
+			if (e.level == Const.Levels[2]) {
 				Assets.dialogue.stop();
 				removeEntitnes();
 				haxe.Timer.delay(function() {
@@ -182,7 +195,7 @@ class PlayScene extends GameScene {
 		var boyABmp = new Bitmap(hxd.Res.party.boyA.toTile(), parent);
 		var boyAHighlightBmp = new Bitmap(hxd.Res.party.boyA_highlight.toTile(), parent);
 		boyABmp.addShader(wobbleShadder(boyABmp));
-		var boyA = new Person(["BoyA"], "PartyBoyA", boyABmp, boyAHighlightBmp, 1110, 464);
+		var boyA = new Person(["BoyA"], "CoffeeBoyB", boyABmp, boyAHighlightBmp, 1110, 464);
 
 		partyPeople.push(boyA);
 
@@ -325,6 +338,117 @@ class PlayScene extends GameScene {
 		}
 
 		spawnSpark(s2d, parent, Const.Levels[1]);
+
+		lastVisited = [];
+	}
+
+	function loadCoffee(s2d:Scene, parent:Object) {
+		coffeeBg = new Bitmap(hxd.Res.coffee.coffee_bg.toTile(), parent);
+		coffeeBg.visible = false;
+
+		// girlE
+		var girlEBmp = new Bitmap(hxd.Res.coffee.girlE.toTile(), parent);
+		girlEBmp.addShader(wobbleShadder(girlEBmp));
+		var girlEHighlightBmp = new Bitmap(hxd.Res.coffee.girlE_highlight.toTile(), parent);
+		var girlE = new Person(["GirlE"], "CoffeeGirlE", girlEBmp, girlEHighlightBmp, 521, s2d.height - girlEBmp.getSize().height);
+
+		coffeePeople.push(girlE);
+
+		// girlBBoyD
+		var girlBBoyDBmp = new Bitmap(hxd.Res.coffee.girlBBoyD.toTile(), parent);
+		girlBBoyDBmp.addShader(wobbleShadder(girlBBoyDBmp));
+		var girlBBoyDHighlightBmp = new Bitmap(hxd.Res.coffee.girlBBoyD_highlight.toTile(), parent);
+		var girlBBoyD = new Person(["GirlB", "BoyD"], "CoffeeGirlBBoyD", girlBBoyDBmp, girlBBoyDHighlightBmp, 746, s2d.height - girlBBoyDBmp.getSize().height);
+
+		coffeePeople.push(girlBBoyD);
+
+		// boy B
+		var boyBBmp = new Bitmap(hxd.Res.coffee.boyb.toTile(), parent);
+		boyBBmp.addShader(wobbleShadder(boyBBmp));
+		var boyBHighlightBmp = new Bitmap(hxd.Res.coffee.boyb_highlight.toTile(), parent);
+		var boyB = new Person(["BoyB"], "CoffeeBoyB", boyBBmp, boyBHighlightBmp, 1152, 553);
+
+		coffeePeople.push(boyB);
+
+		// Boy A
+		var boyABmp = new Bitmap(hxd.Res.coffee.boyA.toTile(), parent);
+		boyABmp.addShader(wobbleShadder(boyABmp));
+		var boyAHighlightBmp = new Bitmap(hxd.Res.coffee.boyA_highlight.toTile(), parent);
+		var boyA = new Person(["BoyA"], "CoffeeBoyA", boyABmp, boyAHighlightBmp, 992, s2d.height - boyABmp.getSize().height);
+
+		coffeePeople.push(boyA);
+
+		// Girl D
+		var girlDBmp = new Bitmap(hxd.Res.coffee.girlD.toTile(), parent);
+		girlDBmp.addShader(wobbleShadder(girlDBmp));
+		var girlDHighlightBmp = new Bitmap(hxd.Res.coffee.girlD_highlight.toTile(), parent);
+		var girlD = new Person(["GirlD"], "CoffeeGirlD", girlDBmp, girlDHighlightBmp, 42, s2d.height - girlDBmp.getSize().height);
+
+		coffeePeople.push(girlD);
+
+		// Girl C Boy C
+		var girlCBoyCBmp = new Bitmap(hxd.Res.coffee.girlCBoyC.toTile(), parent);
+		girlCBoyCBmp.addShader(wobbleShadder(girlCBoyCBmp));
+		var girlCBoyCHighlightBmp = new Bitmap(hxd.Res.coffee.girlCBoyC_highlight.toTile(), parent);
+		var girlCBoyC = new Person(["GirlC", "BoyC"], "CoffeeGirlCBoyC", girlCBoyCBmp, girlCBoyCHighlightBmp, 330, s2d.height - girlCBoyCBmp.getSize().height);
+
+		coffeePeople.push(girlCBoyC);
+
+		// Girl A
+		var girlABmp = new Bitmap(hxd.Res.coffee.girlA.toTile(), parent);
+		girlABmp.addShader(wobbleShadder(girlABmp));
+		var girlAHighlightBmp = new Bitmap(hxd.Res.coffee.girlA_highlight.toTile(), parent);
+		var girlA = new Person(["GirlA"], "CoffeeGirlA", girlABmp, girlAHighlightBmp, 229, s2d.height - girlABmp.getSize().height);
+
+		coffeePeople.push(girlA);
+	}
+
+	function spawnCoffee(s2d:Scene, parent:Object, world:World) {
+		// BG
+		var bg = world.addEntity("bg").add(new Renderable(coffeeBg));
+		coffeeBg.visible = true;
+
+		currentEntities.push(bg);
+
+		var totalNumberToSpawn = 7;
+
+		var peopleToSpawn = new Array<Person>();
+		peopleToSpawn.push(coffeePeople.shift());
+		totalNumberToSpawn -= 1;
+		peopleToSpawn.push(coffeePeople.shift());
+		totalNumberToSpawn -= 2;
+
+		Rand.create().shuffle(coffeePeople);
+
+		var lastMet:Person = null;
+		if (lastVisited.length > 0) {
+			var lastNames = lastVisited[0];
+			Rand.create().shuffle(lastNames);
+			lastMet = coffeePeople.filter(function(f) {
+				return f.names.contains(lastNames[0]);
+			})[0];
+			coffeePeople.remove(lastMet);
+			peopleToSpawn.push(lastMet);
+			totalNumberToSpawn -= lastMet.names.length;
+		}
+
+		while (totalNumberToSpawn > 0 && coffeePeople.length > 0) {
+			var person = coffeePeople.pop();
+			if (totalNumberToSpawn >= person.names.length) {
+				peopleToSpawn.push(person);
+				totalNumberToSpawn -= person.names.length;
+			}
+		}
+
+		for (person in peopleToSpawn) {
+			var p = person.spawnPerson(world, eventBus);
+			var highlight = person.spawnHighlight(p, world);
+
+			currentEntities.push(p);
+			currentEntities.push(highlight);
+		}
+
+		spawnSpark(s2d, parent, Const.Levels[2]);
 
 		lastVisited = [];
 	}

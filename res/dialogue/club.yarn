@@ -15,9 +15,10 @@ title: ClubGirlA
     Player: I don't think I got your name last time.
     <<set $girlANameKnown = true>>
     girlA: Oh, it's {$girlAName} 
+    Player: Nice to get to talk to you again.
 <<else>>
     <<set $girlA += 1>>
-    Player: *Speaking a litle too loud* hmmm what should I get
+    Player: *Speaking a little too loud* hmmm what should I get
     girlA: ...
     Player: Oh did I see you at {$girlCName}'s house?
     girlA: I don't know, probably
@@ -36,6 +37,7 @@ title: ClubGirlBBoyC
 <<if $boyC >= 1>>
     <<set $boyC += 1>>
     <<set $girlB += 1>>
+    <<set $girlBNameKnown = true>>
     boyC: Come on {$girlBName}...
     boyC: You gotta promise not to tell anyone
     girlB: Don't you worry
@@ -44,12 +46,24 @@ title: ClubGirlBBoyC
     Player: Sup, ya we met at her house right?
     girlB: I'm gonna go up to the stage
     girlB: Talk to you two after the show
+    <<if $boyBNameKnown == false>>
+        Player: Oh I didn't get your name by the way.
+        <<set $boyCNameKnown = true>>
+        boyC: Oh! It's {$boyCName}. Sorry about that.
+        Player: No problem nice to finally put a name to the face.
+    <<endif>>
 <<elseif $girlB >= 1>>
     <<set $boyC += 1>>
     <<set $girlB += 1>>
     girlB: Hey over here!
     girlB: Nice to see you again
-    Player: Hey {$girlBName} 
+    <<if $girlBNameKnown == false>>
+        Player: Sorry I don't quite remember your name..
+        <<set $girlBNameKnown = true>>
+        girlB: Oh no problem, it's {$girlBName}
+    <<else>>
+        Player: Hey {$girlBName} 
+    <<endif>>
     Player: You two into this kind of music?
     boyC: I mostly just like going out
     girlB: I listened to them a bunch in middle school

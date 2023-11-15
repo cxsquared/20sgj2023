@@ -20,7 +20,7 @@ title: Variables
 <<declare $girlDName = "Penny">>
 <<declare $girlE = 0>>
 <<declare $girlENameKnown = false>>
-<<declare $girlEColor = "#FFFFFF">>
+<<declare $girlEColor = "#65c4ff">>
 <<declare $girlEName = "Cora">>
 <<declare $boyA = 0>>
 <<declare $boyAColor = "#6bff63">>

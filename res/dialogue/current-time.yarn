@@ -1,10 +1,22 @@
+title: Tutorial
+---
+<<if visited("Tutorial")>>
+    <<stop>>
+<<endif>>
+How I Remember It is designed to only be played once.
+While you are remembering the past, you'll only have 20 seconds to experience the people and conversations that were had.
+Everyone's memory is different and unique.
+After all.. this is how YOU remembered it...
+===
 title: CurrentTimeStart
 ---
 Player: Nah, 2014 was like 3 years ago right?
-Partner: Hahaha...
-Player: Feels like it was both yesterday and forever ago.
-Partner: Well that was when we first met right?
-Partner: You remember right? 
+Partner: Hahahahaha...
+Player: Feels like that was somehow like, yesterday...
+Player: but also forever ago.
+Partner: Well that was pretty long ago at this point,
+Partner: but that was when we first met right?
+Partner: You remember don't you? 
 Partner: It was at Kat's house I think? 
 Player: Was it...? 
 ===
@@ -12,15 +24,15 @@ title: CurrentTimeAfterParty
 ---
 Partner: Those parties were super awkward. 
 Player: It wasn't THAT awkward. 
-Partner: I don't know, I remember you being pretty awkward hehe
+Partner: I don't know, I remember YOU being pretty awkward hehe
 Player: Did we even talk to each other that night?
 Partner: Surely we did right?
 Partner: If we didn't I bet we did at some show.
 Player: Some show?
 Partner: Oh come on...
 Partner: We've known each other how long now?
-Partner: It was at that run down music venue
-Partner: Inside that old theater 
+Partner: It was at that run down music venue.
+Partner: Inside that old theater?
 ===
 title: CurrentTimeAfterClub
 ---
@@ -34,11 +46,11 @@ Player: You mean the one that played acoustic metal covers all the time?
 ===
 title: CurrentTimeEnd
 ---
-Partner: That coffee was really good
-Player: Feels good to remember all these places
+Partner: That coffee was really good.
+Player: Feels good to remember all those places.
 Player: Even if the details are a little fuzzy...
-Partner: In the end
-Partner: we still got to hang there
+Partner: In the end,
+Partner: we still got to hang there,
 Partner: and some how ended up here
 ===
 title: AlreadyTalked
