@@ -57,7 +57,7 @@ class PlayScene extends GameScene {
 	var partyPeople:Array<Person> = [];
 	var clubPeople:Array<Person> = [];
 	var coffeePeople:Array<Person> = [];
-	var lastVisited:Array<String> = [];
+	var lastVisited:Array<Array<String>> = [];
 	var partyBg:Bitmap;
 	var clubBg:Bitmap;
 	var coffeeBg:Bitmap;
@@ -108,7 +108,7 @@ class PlayScene extends GameScene {
 		});
 
 		eventBus.subscribe(TalkedToEvent, function(e) {
-			lastVisited = lastVisited.concat(e.names);
+			lastVisited.push(e.names);
 		});
 
 		eventBus.subscribe(DialogueHidden, function(e) {
@@ -298,8 +298,10 @@ class PlayScene extends GameScene {
 
 		var lastMet:Person = null;
 		if (lastVisited.length > 0) {
+			var lastNames = lastVisited[0];
+			Rand.create().shuffle(lastNames);
 			lastMet = clubPeople.filter(function(f) {
-				return f.names.contains(lastVisited[0]);
+				return f.names.contains(lastNames[0]);
 			})[0];
 			clubPeople.remove(lastMet);
 			peopleToSpawn.push(lastMet);

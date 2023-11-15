@@ -84,7 +84,7 @@ title: ClubGirlCGirlD
 girlC: O M G 
 girlC: They are so good live
 girlD: Right?!? This  is  a  BOP
-Player: HI {$girlC}!
+Player: Hi {$girlCName}!
 girlC: Ahhh Good to see you.
 girlC: I don't think you've met my friend. 
 <<set $girlDNameKnown = true>>
