@@ -1,6 +1,6 @@
 package scene;
 
-import dn.heaps.assets.Aseprite;
+import hxd.Save;
 import hxd.Rand;
 import event.TalkedToEvent;
 import component.Person;
@@ -117,8 +117,10 @@ class PlayScene extends GameScene {
 		eventBus.unsubscribe(DialogueComplete, dialogueComplete);
 		eventBus.unsubscribe(LevelComplete, levelComplete);
 		haxe.Timer.delay(function() {
+			Game.current.saveData.playThroughs += 1;
+			Save.save(Game.current.saveData, Const.SaveFile);
+
 			Assets.dialogue.dialogue.setInitialVariables(true);
-			Assets.dialogue.setVariable("$showTutorial", false);
 			Game.current.setGameScene(new MenuScene(getScene(), console));
 		}, 1000);
 	}

@@ -33,6 +33,10 @@ class MenuScene extends GameScene {
 	public override function init():Void {
 		var s2d = getScene();
 
+		if (Game.current.saveData.playThroughs > 0) {
+			Assets.dialogue.setVariable("$showTutorial", false);
+		}
+
 		eventBus.subscribe(DialogueHidden, dialogueHidden);
 
 		var font:h2d.Font = Assets.font;

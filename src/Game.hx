@@ -1,3 +1,5 @@
+import hxd.snd.openal.SpatializationDriver;
+import hxd.Save;
 import scene.MenuScene;
 import assets.Assets;
 import hxd.res.DefaultFont;
@@ -22,6 +24,7 @@ class Game extends hxd.App {
 	public var globalEventBus:EventBus;
 	public var controller:Controller<GameAction>;
 	public var ca:ControllerAccess<GameAction>;
+	public var saveData:SaveData;
 
 	var scene:GameScene;
 	var fps:Text;
@@ -53,6 +56,8 @@ class Game extends hxd.App {
 		globalEventBus.subscribe(ChangeSceneEvent, onChangeScene);
 
 		Assets.init(globalEventBus, console);
+
+		saveData = Save.load(new SaveData(), Const.SaveFile);
 
 		setGameScene(new MenuScene(s2d, console));
 	}
