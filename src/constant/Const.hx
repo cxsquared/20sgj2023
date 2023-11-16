@@ -15,4 +15,20 @@ class Const {
 
 	static inline function get_FPS()
 		return Std.int(hxd.System.getDefaultFrameRate());
+
+	public static function distortionChance(save:SaveData) {
+		if (save.playThroughs == 1) {
+			return 39;
+		}
+
+		if (save.playThroughs == 2) {
+			return 35;
+		}
+
+		if (save.playThroughs == 3) {
+			return 20;
+		}
+
+		return 40;
+	}
 }

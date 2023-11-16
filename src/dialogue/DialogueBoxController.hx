@@ -1,5 +1,7 @@
 package dialogue;
 
+import ecs.utils.MathUtils;
+import constant.Const;
 import shaders.WobbleShader;
 import ui.SelectableOptions;
 import constant.GameAction;
@@ -28,6 +30,7 @@ enum abstract DialogueNameLocation(Int) to Int {
 
 class DialogueBoxController {
 	public var isTalking = false;
+	public var distortText = false;
 
 	var eventBus:EventBus;
 	var dialogue:DialogueManager;
@@ -42,7 +45,7 @@ class DialogueBoxController {
 	var world:World;
 	var currentText:UnicodeString = "";
 	var numberOfCharsToShow = 0.0;
-	var charsPerSecond = 50.0;
+	var charsPerSecond = 75.0;
 	var textState:DialogueBoxState;
 	var lineMarkup:MarkupParseResult;
 	var spaceTocontinue:Text;
@@ -118,6 +121,23 @@ class DialogueBoxController {
 		lineMarkup = event.markUpResults;
 		dialogueTextName.text = event.characterName();
 
+		if (distortText) {
+			var distortedText = "";
+			for (c in currentText) {
+				var cString = String.fromCharCode(c);
+				if (MathUtils.roll(40) > Const.distortionChance(Game.current.saveData)) {
+					c += MathUtils.roll(100) * MathUtils.randomSign();
+					cString = String.fromCharCode(c);
+					if ( cString == ">" || cString == "<") {
+						cString = "?";
+					}
+				}
+
+				distortedText += cString;
+			}
+
+			currentText = distortedText;
+		}
 		dialogueText.text = currentText;
 		dialogueText.text = "";
 
@@ -400,7 +420,7 @@ class DialogueBoxController {
 		eventBus.unsubscribe(LineShown, this.showLine);
 		eventBus.unsubscribe(OptionsShown, this.showOptions);
 		eventBus.unsubscribe(DialogueComplete, this.dialogueFinished);
-	} 
+	}
 }
 
 enum DialogueBoxState {

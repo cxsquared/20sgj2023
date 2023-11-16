@@ -155,6 +155,7 @@ class PlayScene extends GameScene {
 	function dialogueComplete(e:DialogueComplete) {
 		var s2d = getScene();
 		if (e.nodeName == inbetweenNodes[0]) {
+			setDistortText();
 			dialogueBox.moveTo(4, 4);
 			spawnParty(s2d, sceneLayer, world);
 			currentInbetweenNode++;
@@ -162,6 +163,7 @@ class PlayScene extends GameScene {
 		}
 
 		if (e.nodeName == inbetweenNodes[1]) {
+			setDistortText();
 			dialogueBox.moveTo(4, 4);
 			spawnClub(s2d, sceneLayer, world);
 			currentInbetweenNode++;
@@ -169,6 +171,7 @@ class PlayScene extends GameScene {
 		}
 
 		if (e.nodeName == inbetweenNodes[2]) {
+			setDistortText();
 			dialogueBox.moveTo(4, 4);
 			spawnCoffee(s2d, sceneLayer, world);
 			currentInbetweenNode++;
@@ -177,6 +180,12 @@ class PlayScene extends GameScene {
 
 		if (e.nodeName == inbetweenNodes[3]) {
 			gameEnd();
+		}
+	}
+
+	function setDistortText() {
+		if (Game.current.saveData.playThroughs > 0) {
+			dialogueBox.distortText = true;
 		}
 	}
 
@@ -211,6 +220,7 @@ class PlayScene extends GameScene {
 	}
 
 	function startInbetween() {
+		dialogueBox.distortText = false;
 		dialogueBox.moveTo(4, getScene().height / 2 - dialogueBox.getSize().height / 2, TopRight);
 		eventBus.publishEvent(new StartDialogueNode(inbetweenNodes[currentInbetweenNode]));
 	}
@@ -456,9 +466,11 @@ class PlayScene extends GameScene {
 			lastMet = coffeePeople.filter(function(f) {
 				return f.names.contains(lastNames[0]);
 			})[0];
-			coffeePeople.remove(lastMet);
-			peopleToSpawn.push(lastMet);
-			totalNumberToSpawn -= lastMet.names.length;
+			if (lastMet != null) {
+				coffeePeople.remove(lastMet);
+				peopleToSpawn.push(lastMet);
+				totalNumberToSpawn -= lastMet.names.length;
+			}
 		}
 
 		while (totalNumberToSpawn > 0 && coffeePeople.length > 0) {

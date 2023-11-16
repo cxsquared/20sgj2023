@@ -29,6 +29,10 @@ class MathUtils {
 		return value > 0 ? 1 : value < 0 ? -1 : 0;
 	}
 
+	public static function randomSign():Int {
+		return hxd.Math.random() > .5 ? -1 : 1; 
+	}
+
 	// https://stackoverflow.com/questions/23689001/how-to-reliably-format-a-floating-point-number-to-a-specified-number-of-decimal
 	public static function floatToStringPrecision(n:Float, prec:Int) {
 		n = Math.round(n * Math.pow(10, prec));
