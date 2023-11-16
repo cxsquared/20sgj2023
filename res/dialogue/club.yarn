@@ -18,13 +18,18 @@ title: ClubGirlA
     Player: Nice to get to talk to you again.
 <<else>>
     <<set $girlA += 1>>
-    Player: *Speaking a little too loud* hmmm what should I get
+    Player: *a little too loudly* Hmmm what should I buy..?
     girlA: ...
-    Player: Oh did I see you at {$girlCName}'s house?
-    girlA: I don't know, probably
+    Player: Oh didn't I see you at {$girlCName}'s house?
+    girlA: I don't know... probably.
+    ....
     girlA: Do I know you?
-    Player: I don't think we really talked
-    Player: I've been to a few of her parties
+    Player: I don't think we really talked before,
+    Player: but I'm {$girlCName}'s friend.
+    Player: I've been to a few of her parties.
+    girlA: Ahh one of those people.
+    girlA: Lot's of people went to those,
+    girlA: kinda hard for me to keep track of the faces.
 <<endif>>
 ===
 title: ClubGirlBBoyC
