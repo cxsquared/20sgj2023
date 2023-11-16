@@ -59,6 +59,10 @@ class Game extends hxd.App {
 
 		saveData = Save.load(new SaveData(), Const.SaveFile);
 
+		console.add("setPlaythroughs", function(amount:Int) {
+			saveData.playThroughs = amount;
+		});
+
 		setGameScene(new MenuScene(s2d, console));
 	}
 

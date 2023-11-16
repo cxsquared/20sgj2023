@@ -48,4 +48,23 @@ class MathUtils {
 			return str.substr(0, str.length - prec) + '.' + str.substr(str.length - prec);
 		}
 	}
+
+	// https://gist.github.com/jkilla1000/ed500705a8b7333b1b52
+	private static var hexCodes = "0123456789ABCDEF";
+
+	public static function rgbToHex(r:Int, g:Int, b:Int):Int
+	{
+		var hexString = "0x";
+		//Red
+		hexString += hexCodes.charAt(Math.floor(r/16));
+		hexString += hexCodes.charAt(r%16);
+		//Green
+		hexString += hexCodes.charAt(Math.floor(g/16));
+		hexString += hexCodes.charAt(g%16);
+		//Blue
+		hexString += hexCodes.charAt(Math.floor(b/16));
+		hexString += hexCodes.charAt(b%16);
+		
+		return Std.parseInt(hexString);
+	}
 }

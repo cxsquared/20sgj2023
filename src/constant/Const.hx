@@ -29,6 +29,6 @@ class Const {
 			return 20;
 		}
 
-		return 40;
+		return 1;
 	}
 }

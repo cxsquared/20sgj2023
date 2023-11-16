@@ -30,7 +30,8 @@ enum abstract DialogueNameLocation(Int) to Int {
 
 class DialogueBoxController {
 	public var isTalking = false;
-	public var distortText = false;
+	public var shouldDistortText = false;
+	public var shouldDistortName = false;
 
 	var eventBus:EventBus;
 	var dialogue:DialogueManager;
@@ -121,22 +122,8 @@ class DialogueBoxController {
 		lineMarkup = event.markUpResults;
 		dialogueTextName.text = event.characterName();
 
-		if (distortText) {
-			var distortedText = "";
-			for (c in currentText) {
-				var cString = String.fromCharCode(c);
-				if (MathUtils.roll(40) > Const.distortionChance(Game.current.saveData)) {
-					c += MathUtils.roll(100) * MathUtils.randomSign();
-					cString = String.fromCharCode(c);
-					if ( cString == ">" || cString == "<") {
-						cString = "?";
-					}
-				}
-
-				distortedText += cString;
-			}
-
-			currentText = distortedText;
+		if (shouldDistortText) {
+			currentText = distortText(currentText);
 		}
 		dialogueText.text = currentText;
 		dialogueText.text = "";
@@ -151,10 +138,42 @@ class DialogueBoxController {
 			if (color == "null")
 				color = "#FFFFFF";
 			dialogueTextName.text = '<font color="$color">$name</font>';
+			if (shouldDistortName) {
+				var distortedName = distortText(new UnicodeString(name));
+				dialogueTextName.text = '<font color="$color">$distortedName</font>';
+			}
 			dialogueName.visible = true;
 		} else {
 			dialogueName.visible = false;
 		}
+	}
+
+	function distortText(inputString:UnicodeString):UnicodeString {
+		var distortedText = "";
+		for (c in inputString) {
+			if (c >= 4000) {
+				c = MathUtils.roll(500);
+			}
+			var cString = String.fromCharCode(c);
+			if (cString == ">" || cString == "<") {
+				cString = "?";
+			}
+
+			if (MathUtils.roll(40) > Const.distortionChance(Game.current.saveData)) {
+				c += MathUtils.roll(100) * MathUtils.randomSign();
+				if (c >= 4000) {
+					c = MathUtils.roll(500);
+				}
+				cString = String.fromCharCode(c);
+				if (cString == ">" || cString == "<") {
+					cString = "?";
+				}
+			}
+
+			distortedText += cString;
+		}
+
+		return distortedText;
 	}
 
 	var optionsJustShown = false;
@@ -269,6 +288,11 @@ class DialogueBoxController {
 		var textLenght = Math.min(currentText.length, Math.floor(numberOfCharsToShow));
 		var rawText = currentText.substring(0, Math.floor(textLenght));
 		dialogueText.text = applyTextAttributes(rawText);
+
+		if (shouldDistortName && numberOfCharsToShow % 10 > 3) {
+			dialogueText.text = distortText(dialogueText.text);
+			spaceTocontinue.text = distortText(spaceTocontinue.text);
+		}
 
 		if (rawText == currentText) {
 			textState = DialogueBoxState.WaitingForContinue;

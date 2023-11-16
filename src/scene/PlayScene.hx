@@ -185,7 +185,11 @@ class PlayScene extends GameScene {
 
 	function setDistortText() {
 		if (Game.current.saveData.playThroughs > 0) {
-			dialogueBox.distortText = true;
+			dialogueBox.shouldDistortText = true;
+		}
+
+		if (Game.current.saveData.playThroughs >= 3) {
+			dialogueBox.shouldDistortName = true;
 		}
 	}
 
@@ -210,6 +214,9 @@ class PlayScene extends GameScene {
 	}
 
 	function wobbleShadder(bmp:Bitmap, strength:Float = .05):Shader {
+		if (Game.current.saveData.playThroughs >= 3 && strength == 0.05) {
+			strength = .5;
+		}
 		var shader = new WobbleShader();
 		shader.speed = 5;
 		shader.strength = strength;
@@ -220,7 +227,13 @@ class PlayScene extends GameScene {
 	}
 
 	function startInbetween() {
-		dialogueBox.distortText = false;
+		dialogueBox.shouldDistortText = false;
+		dialogueBox.shouldDistortName = false;
+
+		if (Game.current.saveData.playThroughs >= 3) {
+			dialogueBox.shouldDistortText = true;
+			dialogueBox.shouldDistortName = true;
+		}
 		dialogueBox.moveTo(4, getScene().height / 2 - dialogueBox.getSize().height / 2, TopRight);
 		eventBus.publishEvent(new StartDialogueNode(inbetweenNodes[currentInbetweenNode]));
 	}
@@ -269,6 +282,11 @@ class PlayScene extends GameScene {
 		partyBg.visible = true;
 
 		currentEntities.push(bg);
+
+		if (Game.current.saveData.playThroughs >= 4) {
+			spawnSpark(s2d, parent, Const.Levels[1]);
+			return;
+		}
 
 		for (person in partyPeople) {
 			var p = person.spawnPerson(world, eventBus);
@@ -366,6 +384,11 @@ class PlayScene extends GameScene {
 				peopleToSpawn.push(person);
 				totalNumberToSpawn -= person.names.length;
 			}
+		}
+
+		if (Game.current.saveData.playThroughs >= 4) {
+			spawnSpark(s2d, parent, Const.Levels[1]);
+			return;
 		}
 
 		for (person in peopleToSpawn) {
@@ -479,6 +502,11 @@ class PlayScene extends GameScene {
 				peopleToSpawn.push(person);
 				totalNumberToSpawn -= person.names.length;
 			}
+		}
+
+		if (Game.current.saveData.playThroughs >= 4) {
+			spawnSpark(s2d, parent, Const.Levels[1]);
+			return;
 		}
 
 		for (person in peopleToSpawn) {
