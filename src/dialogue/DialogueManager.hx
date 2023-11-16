@@ -22,8 +22,9 @@ import dialogue.event.OptionsShown.OptionChoice;
 import dialogue.command.ICommandHandler;
 
 class DialogueManager {
+	public var dialogue:Dialogue;
+
 	var storage = new MemoryVariableStore();
-	var dialogue:Dialogue;
 	var stringTable:Map<String, StringInfo>;
 	var lastNodeName:String;
 	var runningDialouge:Bool = false;

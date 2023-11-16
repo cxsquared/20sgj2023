@@ -395,6 +395,12 @@ class DialogueBoxController {
 		options.minHeight = Std.int(dialogueBackgroundSize.height);
 		options.verticalSpacing = 8;
 	}
+
+	public function remove() {
+		eventBus.unsubscribe(LineShown, this.showLine);
+		eventBus.unsubscribe(OptionsShown, this.showOptions);
+		eventBus.unsubscribe(DialogueComplete, this.dialogueFinished);
+	} 
 }
 
 enum DialogueBoxState {

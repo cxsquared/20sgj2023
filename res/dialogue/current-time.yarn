@@ -1,8 +1,11 @@
 title: Tutorial
 ---
-<<if visited("Tutorial")>>
+<<declare $showTutorial = true>>
+
+<<if visited("Tutorial") or not $showTutorial>>
     <<stop>>
 <<endif>>
+
 How I Remember It is designed to only be played once.
 While you are remembering the past, you'll only have 20 seconds to experience the people and conversations that were had.
 Everyone's memory is different and unique.
@@ -10,6 +13,7 @@ After all.. this is how YOU remembered it...
 ===
 title: CurrentTimeStart
 ---
+~~Present Day~~
 Player: Nah, 2014 was like 3 years ago right?
 Partner: Hahahahaha...
 Player: Feels like that was somehow like, yesterday...
@@ -32,7 +36,8 @@ Player: Some show?
 Partner: Oh come on...
 Partner: We've known each other how long now?
 Partner: It was at that run down music venue.
-Partner: Inside that old theater?
+Player: Oh! The one inside that old theater?
+Partner: Ya that's the one..
 ===
 title: CurrentTimeAfterClub
 ---

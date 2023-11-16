@@ -5,4 +5,5 @@
 -lib ldtk-haxe-api
 -lib deepnightLibs
 -lib hxyarn
+-lib heaps-aseprite
 -main Main

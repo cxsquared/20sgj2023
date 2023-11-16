@@ -1,5 +1,6 @@
 package scene;
 
+import dn.heaps.assets.Aseprite;
 import hxd.Rand;
 import event.TalkedToEvent;
 import component.Person;
@@ -59,6 +60,7 @@ class PlayScene extends GameScene {
 	var partyBg:Bitmap;
 	var clubBg:Bitmap;
 	var coffeeBg:Bitmap;
+	var sceneLayer:Object;
 
 	static var inbetweenNodes = [
 		"CurrentTimeStart",
@@ -86,7 +88,7 @@ class PlayScene extends GameScene {
 		WorldUtils.registerConsoleDebugCommands(console, world);
 		#end
 
-		var sceneLayer = new Object();
+		sceneLayer = new Object();
 		layers.add(sceneLayer, Const.BackgroundLayerIndex);
 
 		loadParty(sceneLayer);
@@ -97,78 +99,103 @@ class PlayScene extends GameScene {
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent, Game.current.ca, Assets.dialogue);
 
-		eventBus.subscribe(StartDialogueNode, function(e) {
-			if (clickableSystem != null)
-				clickableSystem.canClick = false;
-
-			if (highlightSystem != null)
-				highlightSystem.enabled = false;
-		});
-
-		eventBus.subscribe(TalkedToEvent, function(e) {
-			lastVisited.push(e.names);
-		});
-
-		eventBus.subscribe(DialogueHidden, function(e) {
-			if (clickableSystem != null)
-				clickableSystem.canClick = true;
-
-			if (highlightSystem != null)
-				highlightSystem.enabled = true;
-		});
-
-		eventBus.subscribe(DialogueComplete, function(e) {
-			if (e.nodeName == inbetweenNodes[0]) {
-				dialogueBox.moveTo(4, 4);
-				spawnParty(s2d, sceneLayer, world);
-				currentInbetweenNode++;
-				return;
-			}
-
-			if (e.nodeName == inbetweenNodes[1]) {
-				dialogueBox.moveTo(4, 4);
-				spawnClub(s2d, sceneLayer, world);
-				currentInbetweenNode++;
-				return;
-			}
-
-			if (e.nodeName == inbetweenNodes[2]) {
-				dialogueBox.moveTo(4, 4);
-				spawnCoffee(s2d, sceneLayer, world);
-				currentInbetweenNode++;
-				return;
-			}
-		});
-
-		eventBus.subscribe(LevelComplete, function(e) {
-			// Party done
-			if (e.level == Const.Levels[0]) {
-				Assets.dialogue.stop();
-				removeEntitnes();
-				haxe.Timer.delay(function() {
-					startInbetween();
-				}, 1000);
-			}
-
-			if (e.level == Const.Levels[1]) {
-				Assets.dialogue.stop();
-				removeEntitnes();
-				haxe.Timer.delay(function() {
-					startInbetween();
-				}, 1000);
-			}
-
-			if (e.level == Const.Levels[2]) {
-				Assets.dialogue.stop();
-				removeEntitnes();
-				haxe.Timer.delay(function() {
-					startInbetween();
-				}, 1000);
-			}
-		});
+		eventBus.subscribe(StartDialogueNode, nodeStarted);
+		eventBus.subscribe(TalkedToEvent, talkedTo);
+		eventBus.subscribe(DialogueHidden, dialogueHidden);
+		eventBus.subscribe(DialogueComplete, dialogueComplete);
+		eventBus.subscribe(LevelComplete, levelComplete);
 
 		// eventBus.publishEvent(new DialogueComplete(inbetweenNodes[1]));
 		startInbetween();
+	}
+
+	function gameEnd() {
+		dialogueBox.remove();
+		eventBus.unsubscribe(StartDialogueNode, nodeStarted);
+		eventBus.unsubscribe(TalkedToEvent, talkedTo);
+		eventBus.unsubscribe(DialogueHidden, dialogueHidden);
+		eventBus.unsubscribe(DialogueComplete, dialogueComplete);
+		eventBus.unsubscribe(LevelComplete, levelComplete);
+		haxe.Timer.delay(function() {
+			Assets.dialogue.dialogue.setInitialVariables(true);
+			Assets.dialogue.setVariable("$showTutorial", false);
+			Game.current.setGameScene(new MenuScene(getScene(), console));
+		}, 1000);
+	}
+
+	function levelComplete(e:LevelComplete) {
+		// Party done
+		if (e.level == Const.Levels[0]) {
+			Assets.dialogue.stop();
+			removeEntitnes();
+			haxe.Timer.delay(function() {
+				startInbetween();
+			}, 1000);
+		}
+
+		if (e.level == Const.Levels[1]) {
+			Assets.dialogue.stop();
+			removeEntitnes();
+			haxe.Timer.delay(function() {
+				startInbetween();
+			}, 1000);
+		}
+
+		if (e.level == Const.Levels[2]) {
+			Assets.dialogue.stop();
+			removeEntitnes();
+			haxe.Timer.delay(function() {
+				startInbetween();
+			}, 1000);
+		}
+	}
+
+	function dialogueComplete(e:DialogueComplete) {
+		var s2d = getScene();
+		if (e.nodeName == inbetweenNodes[0]) {
+			dialogueBox.moveTo(4, 4);
+			spawnParty(s2d, sceneLayer, world);
+			currentInbetweenNode++;
+			return;
+		}
+
+		if (e.nodeName == inbetweenNodes[1]) {
+			dialogueBox.moveTo(4, 4);
+			spawnClub(s2d, sceneLayer, world);
+			currentInbetweenNode++;
+			return;
+		}
+
+		if (e.nodeName == inbetweenNodes[2]) {
+			dialogueBox.moveTo(4, 4);
+			spawnCoffee(s2d, sceneLayer, world);
+			currentInbetweenNode++;
+			return;
+		}
+
+		if (e.nodeName == inbetweenNodes[3]) {
+			gameEnd();
+		}
+	}
+
+	function nodeStarted(e:StartDialogueNode) {
+		if (clickableSystem != null)
+			clickableSystem.canClick = false;
+
+		if (highlightSystem != null)
+			highlightSystem.enabled = false;
+	}
+
+	function talkedTo(e:TalkedToEvent) {
+		lastVisited.push(e.names);
+	}
+
+	function dialogueHidden(e) {
+		if (clickableSystem != null)
+			clickableSystem.canClick = true;
+
+		if (highlightSystem != null)
+			highlightSystem.enabled = true;
 	}
 
 	function wobbleShadder(bmp:Bitmap, strength:Float = .05):Shader {
@@ -195,7 +222,7 @@ class PlayScene extends GameScene {
 		var boyABmp = new Bitmap(hxd.Res.party.boyA.toTile(), parent);
 		var boyAHighlightBmp = new Bitmap(hxd.Res.party.boyA_highlight.toTile(), parent);
 		boyABmp.addShader(wobbleShadder(boyABmp));
-		var boyA = new Person(["BoyA"], "CoffeeBoyB", boyABmp, boyAHighlightBmp, 1110, 464);
+		var boyA = new Person(["BoyA"], "PartyBoyA", boyABmp, boyAHighlightBmp, 1110, 464);
 
 		partyPeople.push(boyA);
 

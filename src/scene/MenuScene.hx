@@ -5,7 +5,6 @@ import dialogue.DialogueBoxController;
 import dialogue.event.StartNode.StartDialogueNode;
 import assets.Assets;
 import h2d.Text;
-import dialogue.event.DialogueComplete;
 import ecs.event.EventBus;
 import h2d.Scene;
 import h2d.Console;
@@ -25,6 +24,7 @@ class MenuScene extends GameScene {
 
 	function dialogueHidden(e:DialogueHidden) {
 		eventBus.unsubscribe(DialogueHidden, dialogueHidden);
+		dialogueBox.remove();
 		haxe.Timer.delay(function() {
 			Game.current.setGameScene(new PlayScene(getScene(), console));
 		}, 1000);
