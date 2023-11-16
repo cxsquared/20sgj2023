@@ -20,10 +20,11 @@ class MenuScene extends GameScene {
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
 
-		eventBus = new EventBus(console);
+		eventBus = Game.current.globalEventBus;
 	}
 
 	function dialogueHidden(e:DialogueHidden) {
+		eventBus.unsubscribe(DialogueHidden, dialogueHidden);
 		haxe.Timer.delay(function() {
 			Game.current.setGameScene(new PlayScene(getScene(), console));
 		}, 1000);
