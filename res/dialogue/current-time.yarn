@@ -13,7 +13,7 @@ After all.. this is how YOU remembered it...
 ===
 title: CurrentTimeStart
 ---
-~~Present Day~~
+[i]~~Present Day~~ [/i]
 Player: Nah, 2014 was like 3 years ago right?
 Partner: Hahahahaha...
 Player: Feels like that was somehow like, yesterday...
@@ -21,7 +21,7 @@ Player: but also forever ago.
 Partner: Well that was pretty long ago at this point,
 Partner: but that was when we first met right?
 Partner: You remember don't you? 
-Partner: It was at Kat's house I think? 
+Partner: It was at [font color="{$girlCColor}"]{$girlCName}[/font]'s house I think? 
 Player: Was it...? 
 ===
 title: CurrentTimeAfterParty

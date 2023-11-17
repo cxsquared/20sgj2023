@@ -32,6 +32,7 @@ class DialogueBoxController {
 	public var isTalking = false;
 	public var shouldDistortText = false;
 	public var shouldDistortName = false;
+	public var currentLevel = 0;
 
 	var eventBus:EventBus;
 	var dialogue:DialogueManager;
@@ -151,18 +152,18 @@ class DialogueBoxController {
 	function distortText(inputString:UnicodeString):UnicodeString {
 		var distortedText = "";
 		for (c in inputString) {
-			if (c >= 4000) {
-				c = MathUtils.roll(500);
+			if (c >= 4000 || c < 0) {
+				c = MathUtils.roll(250);
 			}
 			var cString = String.fromCharCode(c);
 			if (cString == ">" || cString == "<") {
 				cString = "?";
 			}
 
-			if (MathUtils.roll(40) > Const.distortionChance(Game.current.saveData)) {
+			if (MathUtils.roll(40) > Const.distortionChance(Game.current.saveData) - currentLevel) {
 				c += MathUtils.roll(100) * MathUtils.randomSign();
-				if (c >= 4000) {
-					c = MathUtils.roll(500);
+				if (c >= 4000 || c < 0) {
+					c = MathUtils.roll(250);
 				}
 				cString = String.fromCharCode(c);
 				if (cString == ">" || cString == "<") {
@@ -319,6 +320,7 @@ class DialogueBoxController {
 				if (htmlTagsByIndex.exists(endTagIndex))
 					currentEndTag = htmlTagsByIndex.get(endTagIndex);
 
+				// font changes
 				if (attribute.name == "font") {
 					var openTag = '$currrentStartTag<font';
 					var closeTag = '</font>$currentEndTag';
@@ -332,6 +334,22 @@ class DialogueBoxController {
 						}
 					}
 					openTag += '>';
+					htmlTagsByIndex.set(startTagIndex, openTag);
+					htmlTagsByIndex.set(endTagIndex, closeTag);
+				}
+
+				// italics
+				if (attribute.name == "i") {
+					var openTag = '$currrentStartTag<i>';
+					var closeTag = '</i>$currentEndTag';
+					htmlTagsByIndex.set(startTagIndex, openTag);
+					htmlTagsByIndex.set(endTagIndex, closeTag);
+				}
+
+				// italics
+				if (attribute.name == "b") {
+					var openTag = '$currrentStartTag<b>';
+					var closeTag = '</b>$currentEndTag';
 					htmlTagsByIndex.set(startTagIndex, openTag);
 					htmlTagsByIndex.set(endTagIndex, closeTag);
 				}

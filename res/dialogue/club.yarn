@@ -7,25 +7,25 @@ title: ClubGirlA
 // In line to buy Merch
 <<if $girlA >= 1>>
     <<set $girlA += 1>>
-    Player: Ah, your the person from {$girlCName}'s party
-    girlA: Ya I guess
+    Player: Ah, your the person from the party at [font color="{$girlCColor}"]{$girlCName}[/font]'s house! 
+    girlA: Ya I guess...
     Player: The headliner tonight is sooo good.
-    girlA: I'm really just here for the opener
-    girlA: But I guess the main act is pretty good.
+    girlA: I was really just here for the opener,
+    girlA: but I guess the main act is pretty good.
     Player: I don't think I got your name last time.
     <<set $girlANameKnown = true>>
-    girlA: Oh, it's {$girlAName} 
-    Player: Nice to get to talk to you again.
+    girlA: I'm [font color="{$girlAColor}"]{$girlAName}[/font].
+    Player: Well it was nice to get to talk to you again [font color="{$girlAColor}"]{$girlAName}[/font].
 <<else>>
     <<set $girlA += 1>>
-    Player: *a little too loudly* Hmmm what should I buy..?
+    Player: [font opacity=0.5]a little too loudly[/font] Hmmm what should I buy..?
     girlA: ...
-    Player: Oh didn't I see you at {$girlCName}'s house?
+    Player: Oh didn't I see you at [font color="{$girlCColor}"]{$girlCName}[/font]'s house?
     girlA: I don't know... probably.
     ....
     girlA: Do I know you?
     Player: I don't think we really talked before,
-    Player: but I'm {$girlCName}'s friend.
+    Player: but I'm [font color="{$girlCColor}"]{$girlCName}[/font]'s friend.
     Player: I've been to a few of her parties.
     girlA: Ahh one of those people.
     girlA: Lot's of people went to those,
@@ -43,18 +43,18 @@ title: ClubGirlBBoyC
     <<set $boyC += 1>>
     <<set $girlB += 1>>
     <<set $girlBNameKnown = true>>
-    boyC: Come on {$girlBName}...
+    boyC: Come on [font color="{$girlBColor}"][font color="{$girlBColor}"][font color="{$girlBColor}"][font color="{$girlBColor}"][font color="{$girlBColor}"]{$girlBName}[/font][/font][/font][/font][/font]...
     boyC: You gotta promise not to tell anyone
     girlB: Don't you worry
     girlB: Your secrets safe with....
-    boyC: Oh hey you're friends with {$girlCName} right?
+    boyC: Oh hey you're friends with [font color="{$girlCColor}"]{$girlCName}[/font] right?
     Player: Sup, ya we met at her house right?
     girlB: I'm gonna go up to the stage
     girlB: Talk to you two after the show
     <<if $boyBNameKnown == false>>
         Player: Oh I didn't get your name by the way.
         <<set $boyCNameKnown = true>>
-        boyC: Oh! It's {$boyCName}. Sorry about that.
+        boyC: Oh! It's [font color="{$boyCColor}"]{$boyCName}[/font]. Sorry about that.
         Player: No problem nice to finally put a name to the face.
     <<endif>>
 <<elseif $girlB >= 1>>
@@ -65,9 +65,9 @@ title: ClubGirlBBoyC
     <<if $girlBNameKnown == false>>
         Player: Sorry I don't quite remember your name..
         <<set $girlBNameKnown = true>>
-        girlB: Oh no problem, it's {$girlBName}
+        girlB: Oh no problem, it's [font color="{$girlBColor}"][font color="{$girlBColor}"]{$girlBName}[/font][/font]
     <<else>>
-        Player: Hey {$girlBName} 
+        Player: Hey [font color="{$girlBColor}"][font color="{$girlBColor}"]{$girlBName}[/font][/font] 
     <<endif>>
     Player: You two into this kind of music?
     boyC: I mostly just like going out
@@ -85,9 +85,9 @@ title: ClubGirlBBoyC
     boyC: It's nice to meet you
     girlB: I don't think we talked then
     <<set $girlBNameKnown = true>>
-    girlB: I'm {$girlBName}.
+    girlB: I'm [font color="{$girlBColor}"][font color="{$girlBColor}"]{$girlBName}[/font][/font].
     <<set $boyCNameKnown = true>>
-    boyC: Oh I'm {$boyCName}.
+    boyC: Oh I'm [font color="{$boyCColor}"]{$boyCName}[/font].
     Player: Nice to meet you both
 <<endif>>
 ===
@@ -103,11 +103,11 @@ title: ClubGirlCGirlD
 girlC: O M G 
 girlC: They are so good live
 girlD: Right?!? This  is  a  BOP
-Player: Hi {$girlCName}!
+Player: Hi [font color="{$girlCColor}"]{$girlCName}[/font]!
 girlC: Ahhh Good to see you.
 girlC: I don't think you've met my friend. 
 <<set $girlDNameKnown = true>>
-girlC: This is {$girlDName}
+girlC: This is [font color="{$girlDColor}"]{$girlDName}[/font]
 girlD: Nice to meet you!
 girlD: I'm gonna go grab a drink.
 girlD: Want anything?
@@ -122,17 +122,22 @@ title: ClubBoyB
 <<if $boyB >= 1>>
     <<set $boyB += 1>>
     You join the pit
-    boyB: **Notices you are there and give you a smile**
-    Player: **You smile back**
-    You both start jumping to the music
+    [font opacity=0.5][font color="{$boyBColor}"]{$boyBName}[/font] notices you are there and give you a smile[/font]
+    [font opacity=0.5]You smile back[/font]
+    It seems like both of you are having the times of your lives.
+    The crowd pushes and pulls,
+    ebbs and flows.
+    Everyone's bodies are moving as one.
+    You both start jumping to the music.
 <<else>>
     <<set $boyB += 1>>
-    You join the pit
-    You notice a familiar face
-    That face seems to notice you
-    They give you a friendly nod
-    Things start to get rowdy
-    You get lost in the music and the crowd
+    You join the pit,
+    and notice a familiar face but you can't remember the name.
+    [font opacity=0.5]Did you even know their name?[/font]
+    That face seems to notice you,
+    and gives you a friendly nod.
+    Things start to get rowdy.
+    You get lost in the music and the crowd...
 <<endif>>
 ===
 title: ClubBoyA
@@ -150,17 +155,22 @@ title: ClubBoyA
     Player: I don't think I got your name
     boyA: Oh my bad
     <<set $boyANameKnown = true>>
-    boyA: I'm {$boyAName} 
+    boyA: I'm [font color="{$boyAColor}"]{$boyAName}[/font] 
     Player: Thank for the drink!
+    Player: So how are the sports sporting...
+    boyA: Pretty good! The hockey team I watch made it to the playoffs.
+    Player: I hope they do good there!
+    boyA: You and me both! hahaha
 <<else>>
     <<set $boyA += 1>>
     boyA: Can I get 1 PBR
-    boyA: Oh hey you're {$girlCName}'s friend right
-    Player: Ah ya
-    Player: We had some classes together
+    boyA: Oh hey I saw you at [font color="{$girlCColor}"]{$girlCName}[/font]'s house right?
+    Player: Ah ya,
+    Player: I've been to a few of those. 
     <<set $boyANameKnown = true>>
-    boyA: I'm {$boyAName}.
-    boyA: I think I saw you around her place
-    Player: Oh I remember you now
+    boyA: I'm [font color="{$boyAColor}"]{$boyAName}[/font].
+    boyA: Cool to run into you again.
+    boyA: You should ask [font color="{$girlCColor}"]{$girlCName}[/font] for my number.
+    boyA: We can grab a drink and talk sports or something.
 <<endif>>
 ===

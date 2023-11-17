@@ -55,6 +55,7 @@ class DialogueManager {
 			this.runNode(event.node);
 		});
 
+		#if debug
 		console.add("getVar", function(name:String) {
 			var value = dialogue.variableStorage.getValue(name);
 			console.log('$name: ${value.type.name} ==  ${value.asString()}');
@@ -80,6 +81,7 @@ class DialogueManager {
 				console.log('$name: ${value.type.name} ==  ${value.asString()}');
 			}
 		});
+		#end
 	}
 
 	public function addCommandHandler(handler:ICommandHandler) {

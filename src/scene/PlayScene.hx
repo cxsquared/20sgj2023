@@ -118,7 +118,11 @@ class PlayScene extends GameScene {
 		eventBus.unsubscribe(LevelComplete, levelComplete);
 		haxe.Timer.delay(function() {
 			Game.current.saveData.playThroughs += 1;
-			Save.save(Game.current.saveData, Const.SaveFile);
+			#if debug
+			// Save.save(Game.current.saveData, Const.SaveFile);
+			#else
+			// Save.save(Game.current.saveData, Const.SaveFile, true);
+			#end
 
 			Assets.dialogue.dialogue.setInitialVariables(true);
 			Game.current.setGameScene(new MenuScene(getScene(), console));
@@ -155,7 +159,7 @@ class PlayScene extends GameScene {
 	function dialogueComplete(e:DialogueComplete) {
 		var s2d = getScene();
 		if (e.nodeName == inbetweenNodes[0]) {
-			setDistortText();
+			setDistortText(0);
 			dialogueBox.moveTo(4, 4);
 			spawnParty(s2d, sceneLayer, world);
 			currentInbetweenNode++;
@@ -163,7 +167,7 @@ class PlayScene extends GameScene {
 		}
 
 		if (e.nodeName == inbetweenNodes[1]) {
-			setDistortText();
+			setDistortText(1);
 			dialogueBox.moveTo(4, 4);
 			spawnClub(s2d, sceneLayer, world);
 			currentInbetweenNode++;
@@ -171,7 +175,7 @@ class PlayScene extends GameScene {
 		}
 
 		if (e.nodeName == inbetweenNodes[2]) {
-			setDistortText();
+			setDistortText(2);
 			dialogueBox.moveTo(4, 4);
 			spawnCoffee(s2d, sceneLayer, world);
 			currentInbetweenNode++;
@@ -183,7 +187,7 @@ class PlayScene extends GameScene {
 		}
 	}
 
-	function setDistortText() {
+	function setDistortText(level:Int) {
 		if (Game.current.saveData.playThroughs > 0) {
 			dialogueBox.shouldDistortText = true;
 		}
@@ -191,6 +195,8 @@ class PlayScene extends GameScene {
 		if (Game.current.saveData.playThroughs >= 3) {
 			dialogueBox.shouldDistortName = true;
 		}
+
+		dialogueBox.currentLevel = level;
 	}
 
 	function nodeStarted(e:StartDialogueNode) {

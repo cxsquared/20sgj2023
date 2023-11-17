@@ -33,9 +33,13 @@ class MenuScene extends GameScene {
 	public override function init():Void {
 		var s2d = getScene();
 
+		#if debug
+		Assets.dialogue.setVariable("$showTutorial", false);
+		#else
 		if (Game.current.saveData.playThroughs > 0) {
 			Assets.dialogue.setVariable("$showTutorial", false);
 		}
+		#end
 
 		eventBus.subscribe(DialogueHidden, dialogueHidden);
 

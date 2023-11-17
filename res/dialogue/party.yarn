@@ -11,13 +11,11 @@ girlA: The new Mario game...
 Player: Uh, so how is it?
 girlA: Good... I guess.
 Player: So what brings you here?
-girlA: ummm... I live here
 ...
-girlA: So I guess having a home brings me here...
-Player: Oh so you must be friends with {$girlCName}!
-Player: I've got some classes with her.
+girlA: ummm... I live here...
+girlA: So I...
+girlA: I guess having a home brings me here...
 girlA: ....
-...
 Player: ... I guess I'll let you get back to the game then.
 ===
 title: PartyBoyA
@@ -27,16 +25,17 @@ title: PartyBoyA
 <<endif>>
 
 <<set $boyA += 1>>
-boyA: You want one?
+boyA: You want a drink?
 Player: Ah, no I'm good. 
 Player: Thanks though.
 boyA: There's water in the fridge.
 boyA: Feel free to help yourself.
 Player: Oh there's some Coke Zero!
-boyA: I think that's {$girlCName}'s favorite.
 Player: It's a good choice!
-Player: Based on what I know,
-Player: I'm not surprised {$girlCName} has good taste.
+boyA: So you watch any sports?
+Player: A bit here and there,
+Player: but I mostly just watch Twitch.
+boyA: Well it was good to meet you. See you around.
 ===
 title: PartyGirlBBoyB
 ---
@@ -46,19 +45,19 @@ title: PartyGirlBBoyB
 
 <<set $girlB += 1>>
 <<set $boyB += 1>>
-boyB: I CAN'T BELIEVE THEY SAID THAT!?!
-girlB: Right!
-boyB: I'm not surprised.
-girlB: I heard they just play games all class.
-boyB: The absolute audacity of them!
-boyB: OH Hey! You had class with them right?
+girlB: REALLY!
+girlB: I CAN'T BELIEVE THEY SAID THAT!?!
+boyB: I'm not surprised though,
+boyB: I heard they just play games all class.
+girlB: The absolute audacity of them!
+girlB: OH Hey! You had class with them right?
 Player: Oh.. me?
-Player: Ya, can confirm they just played games ALL class
-girlB: That's crazy.
-<<set $girlBNameKnown = true>>
-girlB: I'm {$girlBName} by the way
+Player: Ya, can confirm they just played games ALL class.
+boyB: That's crazy.
 <<set $boyBNameKnown = true>>
-boyB: Pretty sure we had class together, but I'm {$boyBName}
+boyB: Pretty sure we had class together, but I'm [font color="{$boyBColor}"]{$boyBName}[/font].
+<<set $girlBNameKnown = true>>
+girlB: I'm [font color="{$girlBColor}"]{$girlBName} [/font]by the way.
 ===
 title: PartyBoyC
 ---
@@ -67,16 +66,17 @@ title: PartyBoyC
 <<endif>>
 
 <<set $boyC += 1>>
-Player: ... how's it going?
-boyC: Just chillin...
+Player: ... so ... how's it going?
+boyC: Ya know... just... chillin...
 ...
-boyC: So how do you know {$girlCName}?
-Player: Oh we've got class together.
-boyC: Nice, we went to high school together...
+boyC: So what brings you here?
+Player: Oh I've got classes with [font color="{$girlCColor}"]{$girlCName}[/font].
+boyC: Oh cool,
+bodyC: [font color="{$girlCColor}"]{$girlCName}[/font] and I went to high school together...
 <<set $boyCNameKnown = true>>
-boyC: Names {$boyCName} by the way.
-boyC: Good to meet you {$boyCName}.
+boyC: Names [font color="{$boyCColor}"]{$boyCName}[/font] by the way.
+Player: Good to meet you [font color="{$boyCColor}"]{$boyCName}[/font].
 Player: So do you come to these ofter?
-boyC: {$girlCName} and I hangout quite a bit.
+boyC: [font color="{$girlCColor}"]{$girlCName}[/font] and I hangout quite a bit.
 Player: Oh nice. It's good to meet some of her friends.
 ===

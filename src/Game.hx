@@ -1,17 +1,14 @@
-import hxd.snd.openal.SpatializationDriver;
+import hxd.Timer;
+import hxd.res.DefaultFont;
 import hxd.Save;
 import scene.MenuScene;
 import assets.Assets;
-import hxd.res.DefaultFont;
-import hxd.Timer;
-import hxd.System;
 import constant.GameAction;
 import constant.Const;
 import dn.heaps.input.Controller;
 import dn.heaps.input.ControllerAccess;
 import ecs.event.ChangeSceneEvent;
 import ecs.event.EventBus;
-import scene.PlayScene;
 import ecs.scene.GameScene;
 import hxd.Key;
 import h2d.Console;
@@ -50,6 +47,9 @@ class Game extends hxd.App {
 		layer.addChildAt(fps, Const.DebugLayerIndex);
 		console = new Console(DefaultFont.get());
 		layer.addChildAt(console, Const.DebugLayerIndex);
+		console.add("setPlaythroughs", function(amount:Int) {
+			saveData.playThroughs = amount;
+		});
 		#end
 
 		globalEventBus = new EventBus(console);
@@ -57,11 +57,11 @@ class Game extends hxd.App {
 
 		Assets.init(globalEventBus, console);
 
+		#if debug
 		saveData = Save.load(new SaveData(), Const.SaveFile);
-
-		console.add("setPlaythroughs", function(amount:Int) {
-			saveData.playThroughs = amount;
-		});
+		#else
+		saveData = Save.load(new SaveData(), Const.SaveFile, true);
+		#end
 
 		setGameScene(new MenuScene(s2d, console));
 	}
@@ -92,7 +92,7 @@ class Game extends hxd.App {
 		dispose();
 
 		#if hl
-		System.exit();
+		// System.exit();
 		#end
 	}
 
