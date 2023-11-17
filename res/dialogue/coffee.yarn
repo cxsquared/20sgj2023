@@ -300,7 +300,22 @@ Player: I'd be down for that.
 Player: Sounds like it could be a fun time!
 boyA: I'll make you a fan in no time.
 <<elseif $boyA >= 1>>
-TODO
+boyA: Ugh this drink it's just too sweet.
+    <<if $boyANameKnown>>
+    Player: Sup [font color="{$boyAColor}"]{$boyAName}[/font].
+    <<else>>
+    Player: Oh what's up.
+    Player: Sorry but I don't think I got your name last time.
+    <<set $boyANameKnown = true>>
+    boyA: Ah my bad. It's [font color="{$boyAColor}"]{$boyAName}[/font].
+    <<endif>>
+Player: Mind if I sit here?
+boyA: Not at all. I'm just enjoying the music.
+boyA: Thinking about getting a new drink.
+boyA: I'm not feeling this one.
+Player: Ah have you tried the doppio?
+Player: If you want something last sweet with a kick that's the one.
+boyA: Thanks for the recommendation.
 <<else>>
 Player: This singer is really good.
 boyA: That's what I've been trying to tell people.
