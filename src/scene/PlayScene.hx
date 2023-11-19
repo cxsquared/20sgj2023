@@ -105,8 +105,11 @@ class PlayScene extends GameScene {
 		eventBus.subscribe(DialogueComplete, dialogueComplete);
 		eventBus.subscribe(LevelComplete, levelComplete);
 
-		// eventBus.publishEvent(new DialogueComplete(inbetweenNodes[1]));
+		#if debug
+		eventBus.publishEvent(new DialogueComplete(inbetweenNodes[1]));
+		#else
 		startInbetween();
+		#end
 	}
 
 	function gameEnd() {
@@ -117,11 +120,13 @@ class PlayScene extends GameScene {
 		eventBus.unsubscribe(DialogueComplete, dialogueComplete);
 		eventBus.unsubscribe(LevelComplete, levelComplete);
 		haxe.Timer.delay(function() {
-			Game.current.saveData.playThroughs += 1;
-			#if debug
-			// Save.save(Game.current.saveData, Const.SaveFile);
-			#else
-			// Save.save(Game.current.saveData, Const.SaveFile, true);
+			#if save
+				Game.current.saveData.playThroughs += 1;
+				#if debug
+				Save.save(Game.current.saveData, Const.SaveFile);
+				#else
+				Save.save(Game.current.saveData, Const.SaveFile, true);
+				#end
 			#end
 
 			Assets.dialogue.dialogue.setInitialVariables(true);
@@ -593,8 +598,8 @@ class PlayScene extends GameScene {
 
 	function setupSystems(world:World, scene:Scene, camera:Entity) {
 		var window = Window.getInstance();
-		clickableSystem = new ClickableSystem(window);
-		highlightSystem = new HoverHighlightSystem(window, camera);
+		clickableSystem = new ClickableSystem();
+		highlightSystem = new HoverHighlightSystem();
 		world.addSystem(clickableSystem);
 		world.addSystem(new PlayerInputController(Game.current.ca));
 		world.addSystem(new VelocityController());

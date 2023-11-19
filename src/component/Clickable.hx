@@ -1,5 +1,6 @@
 package component;
 
+import h2d.Interactive;
 import ecs.component.IComponent;
 
 class Clickable implements IComponent {
@@ -13,5 +14,6 @@ class Clickable implements IComponent {
 		return '[Clickable]';
 	}
 
-	public function remove() {}
+	public function remove() {
+	}
 }
