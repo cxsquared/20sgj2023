@@ -1,5 +1,8 @@
 package dialogue;
 
+import event.PitchChange;
+import dialogue.event.LineFinshed.LineFinished;
+import dialogue.event.LineStarted;
 import ecs.utils.MathUtils;
 import constant.Const;
 import shaders.WobbleShader;
@@ -136,6 +139,7 @@ class DialogueBoxController {
 		if (dialogueTextName.text != "") {
 			var name = nameKnown ? dialogue.getVariable('$$${dialogueTextName.text}Name').asString() : "???";
 			var color = dialogue.getVariable('$$${dialogueTextName.text}Color').asString();
+			var pitch = dialogue.getVariable('$$${dialogueTextName.text}Pitch').asNumber();
 			if (color == "null")
 				color = "#FFFFFF";
 			dialogueTextName.text = '<font color="$color">$name</font>';
@@ -144,9 +148,12 @@ class DialogueBoxController {
 				dialogueTextName.text = '<font color="$color">$distortedName</font>';
 			}
 			dialogueName.visible = true;
+			eventBus.publishEvent(new PitchChange(pitch));
 		} else {
 			dialogueName.visible = false;
 		}
+
+		eventBus.publishEvent(new LineStarted());
 	}
 
 	function distortText(inputString:UnicodeString):UnicodeString {
@@ -236,7 +243,7 @@ class DialogueBoxController {
 		haxe.Timer.delay(function() {
 			isTalking = false;
 			eventBus.publishEvent(new DialogueHidden());
-		}, 5);
+		}, 150);
 	}
 
 	var clicked = false;
@@ -261,6 +268,7 @@ class DialogueBoxController {
 		if (isTalking && clickedContinue()) {
 			if (textState == TypingText) {
 				return;
+				// Commented out to disable click to finish line
 				// dialogueText.text = applyTextAttributes(currentText);
 				// textState = DialogueBoxState.WaitingForContinue;
 			} else if (textState == WaitingForContinue) {
@@ -297,6 +305,7 @@ class DialogueBoxController {
 
 		if (rawText == currentText) {
 			textState = DialogueBoxState.WaitingForContinue;
+			eventBus.publishEvent(new LineFinished());
 		}
 	}
 

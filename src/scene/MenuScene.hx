@@ -54,7 +54,7 @@ class MenuScene extends GameScene {
 		this.addChild(title);
 
 		var button = new h2d.Text(font);
-		button.text = "Play";
+		button.text = "Start Remembering";
 		button.textAlign = Center;
 		button.x = s2d.width / 2;
 		button.y = s2d.height * .75;
@@ -63,6 +63,8 @@ class MenuScene extends GameScene {
 		interaction.x -= button.calcTextWidth(button.text);
 		interaction.onClick = function(event:hxd.Event) {
 			if (canStart) {
+				AudioController.get().playPlay();
+				AudioController.get().fadeOut(3.);
 				title.remove();
 				button.remove();
 				eventBus.publishEvent(new StartDialogueNode("Tutorial"));
@@ -74,6 +76,8 @@ class MenuScene extends GameScene {
 
 		dialogueBox = new DialogueBoxController(eventBus, null, this, Game.current.ca, Assets.dialogue);
 		dialogueBox.moveTo(4, getScene().height / 2 - dialogueBox.getSize().height / 2, TopRight);
+
+		AudioController.get().playMenu();
 	}
 
 	public override function update(dt:Float):Void {

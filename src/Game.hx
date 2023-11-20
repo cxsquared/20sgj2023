@@ -1,3 +1,4 @@
+import scene.MenuScene;
 import hxd.Save;
 import assets.Assets;
 import hxd.res.DefaultFont;
@@ -14,7 +15,6 @@ import hxd.Key;
 import h2d.Console;
 import h2d.Layers;
 import h2d.Text;
-
 #if debug
 import scene.PlayScene;
 #else
@@ -63,6 +63,7 @@ class Game extends hxd.App {
 		globalEventBus.subscribe(ChangeSceneEvent, onChangeScene);
 
 		Assets.init(globalEventBus, console);
+		AudioController.init(globalEventBus);
 
 		#if save
 		saveData = Save.load(new SaveData(), Const.SaveFile);
@@ -71,7 +72,7 @@ class Game extends hxd.App {
 		#end
 
 		#if debug
-		setGameScene(new PlayScene(s2d, console));
+		setGameScene(new MenuScene(s2d, console));
 		#else
 		setGameScene(new MenuScene(s2d, console));
 		#end

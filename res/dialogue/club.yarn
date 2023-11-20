@@ -19,10 +19,14 @@ title: ClubGirlA
 <<else>>
     <<set $girlA += 1>>
     Player: [font opacity=0.5]a little too loudly[/font] Hmmm what should I buy..?
+    <<talk false>>
     girlA: ...
+    <<talk true>>
     Player: Oh didn't I see you at [font color="{$girlCColor}"]{$girlCName}[/font]'s house?
     girlA: I don't know... probably.
+    <<talk false>>
     ....
+    <<talk true>>
     girlA: Do I know you?
     Player: I don't think we really talked before,
     Player: but I'm [font color="{$girlCColor}"]{$girlCName}[/font]'s friend.
@@ -118,6 +122,7 @@ title: ClubBoyB
     <<jump AlreadyTalked>>
 <<endif>>
 
+<<talk false>>
 // In the pit
 <<if $boyB >= 1>>
     <<set $boyB += 1>>
@@ -139,6 +144,7 @@ title: ClubBoyB
     Things start to get rowdy.
     You get lost in the music and the crowd...
 <<endif>>
+<<talk true>>
 ===
 title: ClubBoyA
 ---

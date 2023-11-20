@@ -6,14 +6,18 @@ title: Tutorial
     <<stop>>
 <<endif>>
 
+<<talk false>>
 How I Remember It is designed to only be played once.
 While you are remembering the past, you'll only have 20 seconds to experience the people and conversations that were had.
 Everyone's memory is different and unique.
 After all.. this is how YOU remembered it...
+<<talk true>>
 ===
 title: CurrentTimeStart
 ---
+<<talk false>>
 [i]~~Present Day~~ [/i]
+<<talk true>>
 Player: Nah, 2014 was like 3 years ago right?
 Partner: Hahahahaha...
 Player: Feels like that was somehow like, yesterday...
@@ -56,7 +60,10 @@ Player: Feels good to remember all those places.
 Player: Even if the details are a little fuzzy...
 Partner: In the end,
 Partner: we still got to hang there,
-Partner: and some how ended up here
+Partner: and some how...
+Partner: still ended up here...
+Player: Ya I guess we did.
+Player: I guess we did.
 ===
 title: AlreadyTalked
 ---

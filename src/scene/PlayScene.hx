@@ -1,5 +1,9 @@
 package scene;
 
+import event.PitchChange;
+import dialogue.event.LineFinshed.LineFinished;
+import dialogue.event.LineStarted;
+import dialogue.event.LineShown;
 import hxd.Save;
 import hxd.Rand;
 import event.TalkedToEvent;
@@ -61,6 +65,7 @@ class PlayScene extends GameScene {
 	var clubBg:Bitmap;
 	var coffeeBg:Bitmap;
 	var sceneLayer:Object;
+	var pitch = 1.0;
 
 	static var inbetweenNodes = [
 		"CurrentTimeStart",
@@ -104,11 +109,16 @@ class PlayScene extends GameScene {
 		eventBus.subscribe(DialogueHidden, dialogueHidden);
 		eventBus.subscribe(DialogueComplete, dialogueComplete);
 		eventBus.subscribe(LevelComplete, levelComplete);
+		eventBus.subscribe(LineStarted, startLine);
+		eventBus.subscribe(LineFinished, lineFinished);
+		eventBus.subscribe(LineFinished, lineFinished);
+		eventBus.subscribe(PitchChange, setPitch);
 
 		#if debug
-		eventBus.publishEvent(new DialogueComplete(inbetweenNodes[1]));
+		// eventBus.publishEvent(new DialogueComplete(inbetweenNodes[1]));
+		startInbetween(true);
 		#else
-		startInbetween();
+		startInbetween(true);
 		#end
 	}
 
@@ -119,14 +129,17 @@ class PlayScene extends GameScene {
 		eventBus.unsubscribe(DialogueHidden, dialogueHidden);
 		eventBus.unsubscribe(DialogueComplete, dialogueComplete);
 		eventBus.unsubscribe(LevelComplete, levelComplete);
+		eventBus.unsubscribe(LineStarted, startLine);
+		eventBus.unsubscribe(LineFinished, lineFinished);
+		eventBus.unsubscribe(PitchChange, setPitch);
 		haxe.Timer.delay(function() {
 			#if save
-				Game.current.saveData.playThroughs += 1;
-				#if debug
-				Save.save(Game.current.saveData, Const.SaveFile);
-				#else
-				Save.save(Game.current.saveData, Const.SaveFile, true);
-				#end
+			Game.current.saveData.playThroughs += 1;
+			#if debug
+			Save.save(Game.current.saveData, Const.SaveFile);
+			#else
+			Save.save(Game.current.saveData, Const.SaveFile, true);
+			#end
 			#end
 
 			Assets.dialogue.dialogue.setInitialVariables(true);
@@ -134,56 +147,94 @@ class PlayScene extends GameScene {
 		}, 1000);
 	}
 
+	function startLine(e:LineStarted) {
+		AudioController.get().startTalking(pitch);
+	}
+
+	function setPitch(e:PitchChange) {
+		pitch = e.pitch == 0 ? 1. : e.pitch;
+	}
+
+	function lineFinished(e:LineFinished) {
+		AudioController.get().stopTalking();
+	}
+
 	function levelComplete(e:LevelComplete) {
+		AudioController.get().stopTalking();
+		AudioController.get().talkEnabled = true;
 		// Party done
 		if (e.level == Const.Levels[0]) {
 			Assets.dialogue.stop();
 			removeEntitnes();
+			AudioController.get().playInbetween(true);
 			haxe.Timer.delay(function() {
 				startInbetween();
-			}, 1000);
+			}, 3000);
 		}
 
 		if (e.level == Const.Levels[1]) {
 			Assets.dialogue.stop();
 			removeEntitnes();
+			AudioController.get().playInbetween(true);
 			haxe.Timer.delay(function() {
 				startInbetween();
-			}, 1000);
+			}, 3000);
 		}
 
 		if (e.level == Const.Levels[2]) {
 			Assets.dialogue.stop();
+			AudioController.get().playInbetween(true);
 			removeEntitnes();
 			haxe.Timer.delay(function() {
 				startInbetween();
-			}, 1000);
+			}, 3000);
 		}
 	}
 
 	function dialogueComplete(e:DialogueComplete) {
 		var s2d = getScene();
+		AudioController.get().stopTalking();
 		if (e.nodeName == inbetweenNodes[0]) {
-			setDistortText(0);
-			dialogueBox.moveTo(4, 4);
-			spawnParty(s2d, sceneLayer, world);
-			currentInbetweenNode++;
+			haxe.Timer.delay(function() {
+				setDistortText(0);
+				dialogueBox.moveTo(4, 4);
+				spawnParty(s2d, sceneLayer, world);
+				currentInbetweenNode++;
+				if (Game.current.saveData.playThroughs <= 2) {
+					AudioController.get().playLevelMusic(Game.current.saveData.playThroughs >= 2 ? 3 : 0);
+				}
+			}, 1500);
+
+			AudioController.get().fadeOut(1.);
 			return;
 		}
 
 		if (e.nodeName == inbetweenNodes[1]) {
-			setDistortText(1);
-			dialogueBox.moveTo(4, 4);
-			spawnClub(s2d, sceneLayer, world);
-			currentInbetweenNode++;
+			haxe.Timer.delay(function() {
+				setDistortText(1);
+				dialogueBox.moveTo(4, 4);
+				spawnClub(s2d, sceneLayer, world);
+
+				if (Game.current.saveData.playThroughs <= 2) {
+					AudioController.get().playLevelMusic(Game.current.saveData.playThroughs >= 2 ? 3 : 1);
+				}
+				currentInbetweenNode++;
+			}, 1500);
+			AudioController.get().fadeOut(1.);
 			return;
 		}
 
 		if (e.nodeName == inbetweenNodes[2]) {
-			setDistortText(2);
-			dialogueBox.moveTo(4, 4);
-			spawnCoffee(s2d, sceneLayer, world);
-			currentInbetweenNode++;
+			haxe.Timer.delay(function() {
+				setDistortText(2);
+				dialogueBox.moveTo(4, 4);
+				spawnCoffee(s2d, sceneLayer, world);
+				if (Game.current.saveData.playThroughs <= 2) {
+					AudioController.get().playLevelMusic(Game.current.saveData.playThroughs >= 2 ? 3 : 2);
+				}
+				currentInbetweenNode++;
+			}, 1500);
+			AudioController.get().fadeOut(1.);
 			return;
 		}
 
@@ -197,7 +248,7 @@ class PlayScene extends GameScene {
 			dialogueBox.shouldDistortText = true;
 		}
 
-		if (Game.current.saveData.playThroughs >= 3) {
+		if (Game.current.saveData.playThroughs >= 2) {
 			dialogueBox.shouldDistortName = true;
 		}
 
@@ -225,7 +276,7 @@ class PlayScene extends GameScene {
 	}
 
 	function wobbleShadder(bmp:Bitmap, strength:Float = .05):Shader {
-		if (Game.current.saveData.playThroughs >= 3 && strength == 0.05) {
+		if (Game.current.saveData.playThroughs >= 2 && strength == 0.05) {
 			strength = .5;
 		}
 		var shader = new WobbleShader();
@@ -237,16 +288,19 @@ class PlayScene extends GameScene {
 		return shader;
 	}
 
-	function startInbetween() {
+	function startInbetween(startMusic:Bool = false) {
 		dialogueBox.shouldDistortText = false;
 		dialogueBox.shouldDistortName = false;
 
-		if (Game.current.saveData.playThroughs >= 3) {
+		if (Game.current.saveData.playThroughs >= 2) {
 			dialogueBox.shouldDistortText = true;
 			dialogueBox.shouldDistortName = true;
 		}
 		dialogueBox.moveTo(4, getScene().height / 2 - dialogueBox.getSize().height / 2, TopRight);
 		eventBus.publishEvent(new StartDialogueNode(inbetweenNodes[currentInbetweenNode]));
+
+		if (startMusic)
+			AudioController.get().playInbetween();
 	}
 
 	function loadParty(parent:Object) {
@@ -294,7 +348,7 @@ class PlayScene extends GameScene {
 
 		currentEntities.push(bg);
 
-		if (Game.current.saveData.playThroughs >= 4) {
+		if (Game.current.saveData.playThroughs >= 3) {
 			spawnSpark(s2d, parent, Const.Levels[1]);
 			return;
 		}
@@ -397,7 +451,7 @@ class PlayScene extends GameScene {
 			}
 		}
 
-		if (Game.current.saveData.playThroughs >= 4) {
+		if (Game.current.saveData.playThroughs >= 3) {
 			spawnSpark(s2d, parent, Const.Levels[1]);
 			return;
 		}
@@ -515,7 +569,7 @@ class PlayScene extends GameScene {
 			}
 		}
 
-		if (Game.current.saveData.playThroughs >= 4) {
+		if (Game.current.saveData.playThroughs >= 3) {
 			spawnSpark(s2d, parent, Const.Levels[1]);
 			return;
 		}

@@ -1,5 +1,6 @@
 package assets;
 
+import dialogue.command.ModifyTalkCommand;
 import h2d.Console;
 import hxyarn.dialogue.Dialogue;
 import dialogue.DialogueManager;
@@ -62,5 +63,7 @@ class Assets {
 			hxd.Res.dialogue.coffee.entry.name,
 		];
 		dialogue.load(yarnText, yarnFileNames);
+
+		dialogue.addCommandHandler(new ModifyTalkCommand(eventBus));
 	}
 }

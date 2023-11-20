@@ -6,4 +6,5 @@
 -lib deepnightLibs
 -lib hxyarn
 -lib heaps-aseprite
+-D save
 -main Main

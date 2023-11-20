@@ -138,7 +138,9 @@ title: CoffeeGirlCBoyC
     Player: Oh hey you two!
     Player: Is this a little date?
     boyC: Oh...uh..
+    <<talk false>>
     ...
+    <<talk true>>
     girlC: What isn't it?
     boyC: What?!?
     girlC: You're pretty obvious you know hehe
@@ -154,7 +156,9 @@ title: CoffeeGirlCBoyC
     Player: Oh hey you two!
     Player: Is this a little date?
     boyC: Oh...uh..
+    <<talk false>>
     ...
+    <<talk true>>
     girlC: We are just grabbing some coffee together. 
     girlC: Pull up a seat and join us!
     boyC: Ya...feel free to join us.
@@ -236,8 +240,10 @@ girlD: What can I get for you?
 Player: Um...
 Player: Can I get chai latte with a shot?
 girlD: One dirty chai coming right up!
+<<talk false>>
 ...
 ...
+<<talk true>>
 girlD: Here you go!
 <<if $girlD >= 2>>
     girlD: I hope to see you again.
@@ -252,6 +258,7 @@ title: CoffeeBoyB
     <<jump AlreadyTalked>>
 <<endif>>
 
+<<talk false>>
 <<if $boyB >= 2>>
     <<set $boyB += 1>>
     boyB: ♫ I'm sure you've already forgotten me, ♫
@@ -272,6 +279,7 @@ title: CoffeeBoyB
     boyB: ♫ Just a lost kid who can't find his part. ♫
     boyB: ♫ And I REALLY LIKE YOU! ♫
 <<endif>>
+<<talk true>>
 ===
 title: CoffeeBoyA
 ---
